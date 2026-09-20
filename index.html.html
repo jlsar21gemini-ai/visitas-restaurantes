@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Formatos de Visita</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Mono:wght@400;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+  :root{
+    --ink:#1B1B1F;
+    --paper:#F6F4EF;
+    --card:#FFFFFF;
+    --line:#E4DFD4;
+    --red:#C81E3A;
+    --red-deep:#8F1128;
+    --green:#2E7D4F;
+    --amber:#B5790A;
+    --muted:#6B675E;
+    --shadow: 0 1px 2px rgba(27,27,31,.06);
+  }
+  :root:not([data-theme="light"]){
+    @media (prefers-color-scheme: dark){
+      --ink:#F2EFE9;
+      --paper:#141315;
+      --card:#1D1C1E;
+      --line:#333136;
+      --red:#FF5470;
+      --red-deep:#FF7A8F;
+      --green:#5BC98A;
+      --amber:#E3A83B;
+      --muted:#9D998F;
+      --shadow: 0 1px 3px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#F2EFE9;
+    --paper:#141315;
+    --card:#1D1C1E;
+    --line:#333136;
+    --red:#FF5470;
+    --red-deep:#FF7A8F;
+    --green:#5BC98A;
+    --amber:#E3A83B;
+    --muted:#9D998F;
+    --shadow: 0 1px 3px rgba(0,0,0,.5);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-tap-highlight-color:transparent;
+  }
+  body.has-app{ padding-bottom:96px; }
+  .mono{font-family:"Space Mono",ui-monospace,monospace;}
+  .hidden{ display:none !important; }
+
+  /* ---------- home / menu screen ---------- */
+  .home-wrap{ max-width:640px; margin:0 auto; padding:28px 18px 40px; }
+  .home-header{ text-align:center; margin-bottom:22px; }
+  .home-header .eyebrow{
+    font-size:11px; letter-spacing:.1em; color:var(--red); font-family:"Space Mono",monospace; font-weight:700;
+  }
+  .home-header h1{ font-size:24px; margin:8px 0 4px; font-weight:800; letter-spacing:-.01em; }
+  .home-header p{ font-size:13.5px; color:var(--muted); margin:0; }
+  .format-card{
+    background:var(--card); border:1px solid var(--line); border-radius:16px;
+    padding:20px 18px; margin-bottom:14px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; gap:10px; cursor:pointer;
+    transition:border-color .15s ease, transform .1s ease;
+  }
+  .format-card:hover{ border-color:var(--red); }
+  .format-card:active{ transform:scale(0.99); }
+  .format-card-top{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .format-icon{ font-size:26px; line-height:1; }
+  .format-name{ font-size:16.5px; font-weight:800; letter-spacing:-.005em; }
+  .format-desc{ font-size:13px; color:var(--muted); line-height:1.4; margin:0; }
+  .format-meta{ display:flex; align-items:center; justify-content:space-between; margin-top:4px; }
+  .format-count{ font-family:"Space Mono",monospace; font-size:11.5px; color:var(--muted); }
+  .format-cta{
+    font-size:12.5px; font-weight:700; color:#fff; background:var(--red);
+    padding:8px 14px; border-radius:8px; white-space:nowrap;
+  }
+  .format-cta.continue{ background:var(--amber); }
+  .home-footer-credit{
+    text-align:center; font-size:11px; color:var(--muted); margin-top:18px;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    background:var(--ink);
+    color:var(--paper);
+    padding:18px 18px 16px;
+    position:sticky; top:0; z-index:20;
+    box-shadow: var(--shadow);
+  }
+  .topbar-row{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+  }
+  .brand{
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .back-link{
+    background:none; border:none; color:#C9C4B8; font-family:inherit; font-size:11.5px;
+    font-weight:600; cursor:pointer; padding:0 0 6px; display:flex; align-items:center; gap:4px;
+  }
+  .brand .eyebrow{
+    font-size:11px; letter-spacing:.08em; color:#C9A9AF; font-family:"Space Mono",monospace;
+  }
+  .brand h1{
+    font-size:19px; margin:0; font-weight:800; letter-spacing:-.01em; line-height:1.15;
+  }
+  .score-badge{
+    text-align:right;
+  }
+  .score-badge .pct{
+    font-size:26px; font-weight:800; font-family:"Space Mono",monospace; line-height:1;
+  }
+  .score-badge .lbl{
+    font-size:10.5px; color:#C9C4B8; letter-spacing:.04em; margin-top:2px;
+  }
+  .score-badge .pts{
+    font-size:11px; color:#C9C4B8; margin-top:2px;
+  }
+
+  .restaurant-row{
+    margin-top:14px;
+  }
+  .ghost-input{
+    width:100%;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:8px;
+    padding:11px 13px;
+    color:var(--paper);
+    font-size:16px;
+    font-weight:600;
+    font-family:inherit;
+  }
+  .ghost-input::placeholder{ color:#B9B4A8; font-weight:500; }
+  .ghost-input:focus{ outline:2px solid var(--red); outline-offset:1px; }
+
+  /* ---------- progress ---------- */
+  .progress-wrap{
+    padding:12px 18px 4px;
+    background:var(--paper);
+    position:sticky; top:96px; z-index:19;
+    border-bottom:1px solid var(--line);
+  }
+  .progress-line{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--muted); margin-bottom:6px; }
+  .progress-line strong{ color:var(--ink); }
+  .progress-track{ height:7px; border-radius:99px; background:var(--line); overflow:hidden; }
+  .progress-fill{ height:100%; background:var(--red); border-radius:99px; transition:width .25s ease; }
+  .progress-fill.complete{ background:var(--green); }
+  .progress-wrap-inner{ padding-bottom:10px; }
+
+  /* ---------- layout ---------- */
+  main{ max-width:760px; margin:0 auto; padding:16px 14px 8px; }
+
+  .section-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    margin-bottom:14px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .section-head{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:13px 15px;
+    background:linear-gradient(0deg, rgba(200,30,58,.05), rgba(200,30,58,.05));
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    user-select:none;
+  }
+  .section-head-left{ display:flex; align-items:baseline; gap:9px; min-width:0; }
+  .section-num{
+    font-family:"Space Mono",monospace; font-size:11px; color:var(--red); flex-shrink:0;
+  }
+  .section-title{ font-size:14.5px; font-weight:700; letter-spacing:-.005em; }
+  .section-sub{
+    display:flex; align-items:center; gap:8px; flex-shrink:0;
+  }
+  .section-score{
+    font-family:"Space Mono",monospace; font-size:12.5px; color:var(--muted); white-space:nowrap;
+  }
+  .section-score b{ color:var(--ink); }
+  .chev{ transition:transform .2s ease; color:var(--muted); flex-shrink:0; }
+  .section-card.collapsed .chev{ transform:rotate(-90deg); }
+  .section-card.collapsed .items{ display:none; }
+
+  .items{ padding:4px 0; }
+  .item-row{
+    padding:13px 15px;
+    border-bottom:1px solid var(--line);
+    display:flex; gap:11px;
+  }
+  .item-row:last-child{ border-bottom:none; }
+  .item-num{
+    font-family:"Space Mono",monospace;
+    font-size:11.5px;
+    color:var(--muted);
+    width:20px; flex-shrink:0; padding-top:2px;
+  }
+  .item-body{ flex:1; min-width:0; }
+  .item-desc{ font-size:13.6px; line-height:1.42; margin:0 0 9px; }
+  .item-controls{ display:flex; gap:8px; flex-wrap:wrap; }
+  .score-select{
+    font-family:"Space Mono",monospace;
+    font-weight:700;
+    font-size:13.5px;
+    padding:8px 10px;
+    border-radius:7px;
+    border:1.5px solid var(--line);
+    background:var(--card);
+    color:var(--ink);
+    min-width:76px;
+  }
+  .score-select.is-empty{ border-color:var(--amber); color:var(--amber); }
+  .score-select.is-na{ color:var(--muted); }
+  .evidencia-input{
+    flex:1; min-width:150px;
+    font-family:inherit;
+    font-size:13.5px;
+    padding:8px 10px;
+    border-radius:7px;
+    border:1.5px solid var(--line);
+    background:var(--card);
+    color:var(--ink);
+  }
+  .evidencia-input::placeholder{ color:var(--muted); }
+  .score-select:focus, .evidencia-input:focus{ outline:2px solid var(--red); outline-offset:1px; }
+
+  /* ---------- totals ---------- */
+  .totals-card{
+    background:var(--ink); color:var(--paper);
+    border-radius:12px; padding:16px 18px; margin:6px 0 14px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    box-shadow:var(--shadow);
+  }
+  .totals-card .t-label{ font-size:13px; font-weight:700; letter-spacing:.01em; }
+  .totals-card .t-sub{ font-size:11.5px; color:#C9C4B8; margin-top:3px; }
+  .totals-card .t-pct{ font-family:"Space Mono",monospace; font-size:28px; font-weight:800; }
+
+  /* ---------- footer fields ---------- */
+  .footer-card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:16px 15px; margin-bottom:14px; box-shadow:var(--shadow);
+  }
+  .footer-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:480px){ .footer-grid{ grid-template-columns:1fr; } }
+  .field-label{ font-size:11px; color:var(--muted); letter-spacing:.03em; margin-bottom:6px; }
+  .field-input{
+    width:100%; font-family:inherit; font-size:15px; font-weight:600;
+    padding:11px 12px; border-radius:8px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink);
+  }
+  .field-input::placeholder{ color:var(--muted); font-weight:500; }
+  .field-input:focus{ outline:2px solid var(--red); outline-offset:1px; }
+  .date-wrap{ position:relative; }
+  .date-ghost{
+    position:absolute; left:12px; top:50%; transform:translateY(-50%);
+    color:var(--muted); font-weight:500; font-size:15px; pointer-events:none;
+  }
+  .credit-line{
+    text-align:center; font-size:11px; color:var(--muted); letter-spacing:.02em;
+    padding:6px 10px 18px;
+  }
+  .screen-watermark{
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+    display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .screen-watermark span{
+    font-family:"Comic Neue",cursive; font-size:5px; color:var(--muted);
+    opacity:.35; white-space:nowrap; transform:rotate(-28deg);
+  }
+  .meta-row{ margin-top:14px; display:grid; grid-template-columns:1fr 1.3fr; gap:8px; }
+  @media (max-width:420px){ .meta-row{ grid-template-columns:1fr; } }
+  .elaboro-stack{ display:flex; flex-direction:column; gap:8px; }
+  .email-input{ font-family:"Space Mono",ui-monospace,monospace; font-size:13px; }
+
+  /* ---------- history ---------- */
+  .history-toggle{
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:12px; margin-bottom:14px;
+    background:var(--card); border:1px dashed var(--line); border-radius:12px;
+    color:var(--muted); font-size:13px; font-weight:600; font-family:inherit; cursor:pointer;
+  }
+  .history-panel{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    margin-bottom:14px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .history-panel.hidden{ display:none; }
+  .history-item{
+    padding:12px 15px; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .history-item:last-child{ border-bottom:none; }
+  .hi-main{ min-width:0; }
+  .hi-name{ font-size:13.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .hi-meta{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+  .hi-pct{ font-family:"Space Mono",monospace; font-weight:700; font-size:13px; flex-shrink:0; }
+  .hi-dl{
+    flex-shrink:0; background:none; border:1.5px solid var(--line); border-radius:7px;
+    padding:7px 10px; font-size:11.5px; font-weight:700; color:var(--ink); cursor:pointer; font-family:inherit;
+  }
+  .history-empty{ padding:20px 15px; text-align:center; color:var(--muted); font-size:13px; }
+
+  /* ---------- action bar ---------- */
+  .action-bar{
+    position:fixed; left:0; right:0; bottom:0; z-index:30;
+    background:var(--card); border-top:1px solid var(--line);
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    display:flex; gap:10px;
+    box-shadow:0 -2px 10px rgba(0,0,0,.08);
+  }
+  .btn{
+    flex:1; padding:14px 10px; border-radius:10px; border:none;
+    font-family:inherit; font-weight:700; font-size:13.5px; letter-spacing:.01em;
+    cursor:pointer;
+  }
+  .btn-reset{
+    background:var(--paper); color:var(--ink); border:1.5px solid var(--line);
+  }
+  .btn-main{
+    background:var(--red); color:#fff;
+  }
+  .btn-main:disabled{
+    background:var(--line); color:var(--muted); cursor:not-allowed;
+  }
+
+  /* ---------- modal ---------- */
+  .overlay{
+    position:fixed; inset:0; background:rgba(20,19,17,.55); z-index:50;
+    display:flex; align-items:center; justify-content:center; padding:24px;
+  }
+  .overlay.hidden{ display:none; }
+  .modal{
+    background:var(--card); color:var(--ink); border-radius:14px; padding:22px 20px;
+    max-width:360px; width:100%; box-shadow:0 10px 30px rgba(0,0,0,.25);
+  }
+  .modal p{ font-size:14.5px; line-height:1.5; margin:0 0 8px; font-weight:600; }
+  .modal .modal-sub{ font-size:12.5px; color:var(--muted); font-weight:400; margin-bottom:16px; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions .btn{ flex:1; }
+  .btn-yes{ background:var(--red); color:#fff; }
+  .btn-no{ background:var(--paper); border:1.5px solid var(--line); color:var(--ink); }
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:100px; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:var(--paper); padding:11px 18px; border-radius:99px;
+    font-size:13px; font-weight:600; opacity:0; pointer-events:none; transition:all .25s ease;
+    z-index:60; white-space:nowrap; box-shadow:0 6px 20px rgba(0,0,0,.25);
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .missing-banner{
+    background:rgba(200,30,58,.08); border:1px solid rgba(200,30,58,.25); color:var(--red-deep);
+    border-radius:10px; padding:10px 13px; font-size:12.5px; margin-bottom:14px; font-weight:600;
+  }
+  .missing-banner.hidden{ display:none; }
+
+  /* ---------- semáforo de puntaje (relleno según %) ---------- */
+  .score-chip{
+    display:inline-block; padding:3px 10px; border-radius:8px; transition:background-color .2s ease, color .2s ease;
+  }
+  .fill-red{ background:#FADCDC; color:#8A1F1F; }
+  .fill-yellow{ background:#FCEDB0; color:#6B5300; }
+  .fill-green{ background:#CFEFDA; color:#155C34; }
+  .fill-blue{ background:#CFE3FA; color:#154A85; }
+
+  /* ---------- alerta: ítem de peso 4 calificado en 0 ---------- */
+  .item-row.zero-alert{ background:#FCEDB0; }
+  .item-row.zero-alert .item-desc, .item-row.zero-alert .item-num{ color:#6B5300; }
+  .score-select.zero-alert-select{ background:#FCEDB0; border-color:#D8B94A; color:#6B5300; }
+</style>
+</head>
+<body>
+
+<!-- ============ HOME / MENU SCREEN ============ -->
+<div class="home-wrap" id="homeScreen">
+  <div class="home-header">
+    <h1>Formatos de Visita</h1>
+    <p>Elige qué tipo de visita vas a realizar</p>
+  </div>
+  <div id="formatCards"></div>
+  <div class="home-footer-credit">Desarrollado por José Luis Sarmiento Bernal</div>
+</div>
+
+<!-- ============ APP SCREEN (checklist) ============ -->
+<div id="appScreen" class="hidden">
+  <div class="topbar">
+    <div class="topbar-row">
+      <div class="brand">
+        <button class="back-link" id="btnBackToMenu">← Formatos de visita</button>
+        <span class="eyebrow" id="formEyebrow">—</span>
+        <h1 id="formTitle">—</h1>
+      </div>
+    </div>
+    <div class="topbar-row" style="margin-top:12px; align-items:center;">
+      <div style="flex:1;"></div>
+      <div class="score-badge">
+        <div class="pct mono" id="livePct">0%</div>
+        <div class="lbl">CUMPLIMIENTO</div>
+        <div class="pts" id="livePts">0 / 0 pts</div>
+      </div>
+    </div>
+    <div class="meta-row">
+      <input type="text" id="codigoInput" class="ghost-input" placeholder="CODIGO" autocomplete="off">
+      <input type="text" id="correoCodigoInput" class="ghost-input email-input" placeholder="correo@sipo.com.co" autocomplete="off">
+    </div>
+    <div class="restaurant-row">
+      <input type="text" id="restaurantInput" class="ghost-input" placeholder="RESTAURANTE" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-wrap-inner">
+      <div class="progress-line">
+        <span>Ítems calificados</span>
+        <span><strong id="progressCount">0</strong> / <span id="progressTotal">0</span></span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <main>
+    <div class="missing-banner hidden" id="missingBanner"></div>
+    <div id="sectionsRoot"></div>
+
+    <div class="totals-card">
+      <div>
+        <div class="t-label">PUNTAJE TOTAL</div>
+        <div class="t-sub" id="totalSub">0 de 0 puntos posibles</div>
+      </div>
+      <div class="t-pct mono" id="totalPct">0%</div>
+    </div>
+
+    <div class="footer-card">
+      <div class="footer-grid">
+        <div class="elaboro-stack">
+          <div>
+            <div class="field-label">ELABORÓ</div>
+            <input type="text" id="elaboroInput" class="field-input" placeholder="ELABORO" autocomplete="off">
+          </div>
+          <div>
+            <div class="field-label">CORREO</div>
+            <input type="text" id="correoElaboroInput" class="field-input email-input" placeholder="correo@frisby.com.co" autocomplete="off">
+          </div>
+        </div>
+        <div>
+          <div class="field-label">FECHA</div>
+          <div class="date-wrap">
+            <input type="date" id="fechaInput" class="field-input">
+            <span class="date-ghost" id="fechaGhost">FECHA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="credit-line" id="creditLine">Desarrollado por José Luis Sarmiento Bernal</div>
+
+    <button class="history-toggle" id="historyToggle">📁 Ver historial de visitas digitalizadas (<span id="historyCount">0</span>)</button>
+    <div class="history-panel hidden" id="historyPanel"></div>
+  </main>
+
+  <div class="screen-watermark" id="screenWatermark" aria-hidden="true"></div>
+
+  <div class="action-bar">
+    <button class="btn btn-reset" id="btnReset">REALIZAR UN NUEVO REPORTE</button>
+    <button class="btn btn-main" id="btnDigitalizar" disabled>DIGITALIZAR VISITA</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="overlayDigitalizar">
+  <div class="modal">
+    <p>¿Está seguro de finalizar la visita?</p>
+    <div class="modal-sub">Se generará el PDF con la información diligenciada y quedará registrada en el historial.</div>
+    <div class="modal-actions">
+      <button class="btn btn-no" id="btnDigitalizarNo">NO</button>
+      <button class="btn btn-yes" id="btnDigitalizarSi">SI</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="overlayReset">
+  <div class="modal">
+    <p>¿Seguro que deseas iniciar un nuevo reporte?</p>
+    <div class="modal-sub">Se borrarán las calificaciones, observaciones, restaurante, elaboró y fecha actuales. Esta acción no afecta el historial ya digitalizado.</div>
+    <div class="modal-actions">
+      <button class="btn btn-no" id="btnResetNo">NO</button>
+      <button class="btn btn-yes" id="btnResetSi">SI</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ CONFIGURACIÓN GLOBAL (compartida entre formatos) ============ */
+  var CONFIG = {
+    emailDomainCodigo: "@sipo.com.co",
+    emailDomainElaboro: "@frisby.com.co",
+    creditText: "Desarrollado por José Luis Sarmiento Bernal"
+  };
+
+  function generarCorreoCodigo(codigo){
+    var c = (codigo || "").trim().replace(/\s+/g,"");
+    return c ? (c.toLowerCase() + CONFIG.emailDomainCodigo) : "";
+  }
+  function generarCorreoElaboro(nombre){
+    var parts = (nombre || "").trim().split(/\s+/).filter(Boolean);
+    if(parts.length === 0) return "";
+    var inicial = parts[0].charAt(0);
+    var apellido = parts[parts.length - 1];
+    return (inicial + apellido).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"") + CONFIG.emailDomainElaboro;
+  }
+
+  /* ============ DATOS: FORMATO 1 — AUTOINSPECCIÓN DE CALIDAD (pestaña FA) ============ */
+  var FA_WEIGHT4 = [9,14,31,39,46];
+  var FA_SECTIONS = [
+    { name:"INFRAESTRUCTURA EQUIPOS Y UTENSILIOS", max:10, items:[
+      [1,"Cumplen con diseño, construcción localización y accesos que asegure inocuidad de los procesos y las instalaciones sanitarias cumplen  con la normatividad"],
+      [2,"Las Pisos, Paredes, techos y drenajes aseguren la inocuidad y evitan el riesgo de accidentes"],
+      [3,"Las Ventanas, Puertas y otras aberturas protegen del ingresos de plagas."],
+      [4,"Todos los equipos y utensilios estan completos, no tienen partes que ponen en peligro la inocuidad de los productos."],
+      [5,"Todos los equipos estan bien calibrados cumplen con temperaturas y tiempos establecidos."]
+    ]},
+    { name:"REQUISITOS HIGIÉNICOS DE FABRICACIÓN", max:12, items:[
+      [6,"Cumplen con el proceso de recepcion y el Documento DCRME06 y garantizan calificacion en la plataforma."],
+      [7,"Garantizan la temperatura y condiciones de almacenamiento de los productos: Refrigerados, congelados y a temperatura ambiente y no hay vidrio que ponga en riesgo la inocuidad."],
+      [8,"Los productos NO CONFORMES se manejan de acuerdo al protocolo establecido."],
+      [9,"Todas las masterias primas y productos utilizados tienen fecha de vencimiento y esta es vigente"],
+      [10,"Todos los elementos de limpieza y de uso personal estan en orden y en el lugar indicado"]
+    ]},
+    { name:"ASEGURAMIENTO Y CONTROL", max:30, items:[
+      [11,"Cumplen con la agenda de variables de control, en informacion clara y confiable y en los tiempos establecidos."],
+      [12,"Tienen actualizada y bien manejada la carpeta de Calidad con los documentos requeridos. No manejan documento obsoletos."],
+      [13,"Cumplen con los tiempos de retención en el gabinete, cajones calientes y lamparas de calor."],
+      [14,"Conocen el procedimiento de elaboración de los productos de la compañía de acuerdo a los protocolos establecidos."],
+      [15,"Tienen información clara y confiable para la trazabilidad de los productos"],
+      [16,"Cumplen estrictamente con el proceso de desinfeccion de verduras de ser necesario y llevan los registros."],
+      [17,"Realizan las operaciones de prealistamiento: Desmechado de pollo, pesaje de ensaladas y frijoles evitando la contaminación o deterioro de estos."],
+      [18,"El aceite se encuentra de excelente calidad y es bien manejado y cumplen con los programas de renovación y aseguramiento, el corredor esta dentro de los parámetros normales"],
+      [19,"Cumplen con las Estructuras de producto a la mesa y a llevar de acuerdo a lo establecido"],
+      [20,"Los alimentos que no son de la marca, tienen un lugar definido y evitan la contaminacion cruzada de estos. No comen dentro del restaurante."],
+      [21,"Cumplen con los ajustes y actualizaciones definidas por la compañía (ITP), Nuevos productos y mejoramientos."],
+      [22,"Los parametros de Microbiologicos estan dentro de los estandares establecidos y de no estarlo realizan el plan de accion."],
+      [23,"El restaurante no tiene quejas por Calidad e Inocuidad y de tenerlas les realiza seguimiento para el mejoramiento, con planes de acción claros y precisos."],
+      [24,"Realizan el plan de accion de las autoinspecciones realizadas y el JZ realiza el respectivo seguimiento."]
+    ]},
+    { name:"BUENAS PRÁCTICAS DE MANUFACTURA", max:30, items:[
+      [25,"En los equipos y utensilios se asegura la Limpieza con mayor frecuencia, se realiza enfasis en manijas, utensilios de uso frecuente y de uso de terceros."],
+      [26,"Todo el personal tiene certificación medica vigente y asegura su salud siempre, aplica para personal interno y externos."],
+      [27,"Todo el personal tiene educación y capacitación minimo 10 horas al año, conocen los modulos y se cumple el plan de capacitación, tanto en personal externos como internos."],
+      [28,"Realizan un buen manejo de su ropa personal, la guardan debidamente sin contaminar el uniforme y al ingreso al restaurante, mantienen los lockers en buen estado y estan corporativamente marcados"],
+      [29,"No usan lociones, accesorios, maquillaje y los hombres estan recien afeitados."],
+      [30,"Todos los manipuladores cumplen con UNIFORME LIMPIO Y COMPLETO, no salen del establecimiento con él puesto."],
+      [31,"Todos los manipuladores se lavan las manos con la frecuencia establecida y en las condiciones definidas que aseguren Inocuidad. Usan siempre el timer."],
+      [32,"Usan tapabocas de acuerdo al procedimiento definido y cumplen con su manejo."],
+      [33,"Usan los EPP de acuerdo al procedimiento establecido, los llevan bien puesta y los limpian de acuerdo a la frecuencia establecida y al finalizar el turno se almacenan adecuadamente."],
+      [34,"Los domicilios lavan sus manos con la frecuencia establecida."],
+      [35,"Los domiciliarios mantienen el cajon limpio, garantizan el alcohol siempre, usan dotacion completa."],
+      [36,"Todos los visitantes cumplen con habitos higienicos, usan oberol o bata y EPP en todo momento, se lavan las manos con la frecuencia establecida."],
+      [37,"En el restaurante se encuentran los avisos Alusivos en buen estado y bien ubicados y motivan al cumplimiento de las BPM, tanto para servicio a la mesa como a llevar."],
+      [38,"Cumplen con practicas higienicas para realizacion de compras y para recibir terceros, en todo momento."]
+    ]},
+    { name:"PLAN MAESTRO DE SANEAMIENTO", max:14, items:[
+      [39,"Conocen y Cumplen con el programa de L&D general de compañía, realizan el cronograma de acuerdo a los equipos y realizan el seguimiento."],
+      [40,"Realizan las aspersiones cada 3 horas de acuerdo a lo establecido."],
+      [41,"Rotan los desinfectantes cumpliendo con los programas establecidos."],
+      [42,"Cumplen con los registros de L&D y las frecuencias estipuladas de acuerdo a las nuevas necesidades."],
+      [43,"Cumplen con el Programa de Calidad del Agua y uso eficiente de esta. Lavado de filtros y utilizacion del Kit cloro y pH y tienen el certificado de lavado de tanques. El restaurante asegura el suministro."],
+      [44,"Conocen el manejo de las sustancias quimicas y sus dosificaciones, las almacenan de tal manera que se eviten el riesgo de contaminacion."]
+    ]},
+    { name:"MANEJO INTEGRADO DE PLAGAS", max:6, items:[
+      [45,"Se cumple con la periodicidad de fumigaciones y el control antes de hacerlas, los certificados y los planes de acción."],
+      [46,"No hay plagas en el restaurante y se cumple con el programa asegurando su control"]
+    ]},
+    { name:"SOSTENIBILIDAD", max:8, items:[
+      [47,"Cumplen con el manejo de RESIDUOS ORDINARIOS, RECICLABLES Y ORGÁNICOS, manejo de bolsas, stickers, colores y disposición."],
+      [48,"Realizan la limpiezas y tratamientos a la TRAMPA DE GRASA y manejan los RESIDUOS ESPECIALES de acuerdo a los establecido por la compañía y cuentan con los sifones con rejillas."],
+      [49,"El inventario de sustancias químicas esta controlada y no manejan productos vencidos y estan rotulados conformes, aseguran el alcohol todo el tiempo."],
+      [50,"Manejan los indicadores ambientales y aseguran su mejoramiento."]
+    ]}
+  ];
+
+  /* ============ DATOS: FORMATO 2 — FORMATO DE SERVICIO (pestaña "Formato servicio", corregido) ============ */
+  var SERVICIO_WEIGHT4 = [];
+  var SERVICIO_SECTIONS = (function(){
+    var raw = [
+      ["FACHADA", [
+        "Fachada limpia y en buen estado (exterior, puertas, pisos, ventanas, jardín, materas, cenefas,tapetes)",
+        "Aviso limpio, en buen estado, encendido",
+        "Material publicitario externo en buen estado y limpio (Tropezón, gigantografías, cajas de luz, retablos, pendones, vinilos, arcos)"
+      ]],
+      ["SALÓN", [
+        "Material publicitario interno en buen estado y limpio (Retablos, marcos led, habladores de mesa, vinilos)",
+        "Mesas, sillas limpias (chicles,mocos, tornillos salidos) y sillas de bebés en buen estado y niveladas",
+        "Orden general del salón, sin elementos mal acomodados (implementos de aseo, cascos, chaquetas)",
+        "Paredes y techos  limpios y en buen estado",
+        "Pisos limpios y en buen estado - uso de señalización piso húmedo, antideslizantes",
+        "Canecas limpias, sin mal olor, sin rebosar.",
+        "Señalización definida (rutas de evacuación, espacio libre humo, cuide sus objetos personales, aviso uso de camaras, prohibido el ingreso de mascotas)",
+        "Iluminación adecuada en general, tomas corriente con proteccion",
+        "Kiosko encendido y funcionando correctamente",
+        "Música funciona ok, volumen adecuado",
+        "TV de salón encendidos y transmitiendo programas definidos, sin volumen. ",
+        "Rte ventilado y con buena temperatura, aire acondicionado encendido y funciona ok",
+        "Materos y matas internas en buen estado, con agua, hojas sin polvo",
+        "Barra limpia, ordenada y en buen estado",
+        "Pantalla LTO encendido y funcionando correctamente",
+        "Menú digital encendido, todos los monitores funcionando, orden del menú ok.",
+        "Frisby Kids (Aviso, exhibidor, iluminación, limpieza, correcta exhibición)",
+        "Carta menú disponible, limpia y en buen estado",
+        "No cuenta con volantes o material impreso en la barra.",
+        "Bandejas de autoservicio limpias y en buen estado",
+        "Buzón de Servicio: Con tarjetas, en buen estado, visible al cliente",
+        "Turnadores: Completos, con Stickers, funcionando, reporte de daños, necesidad de otra torre.",
+        "Marco PC, POP Puntos Colombia, Dintel Lateral, Chispa sin Fila, Factura electrónica, Hablador salsas y hablador de barra de temporada Instalados, actualizados y en buen estado. ",
+        "Cajones Domicilio/Maletas: Buen estado, limpieza, aislante, Stickers. 6 pasos LyD antes de uso. Alcohol ",
+        "Hay elementos de imagen escritos a mano y/o con tachones o enmendaduras?"
+      ]],
+      ["PARQUE INFANTIL", [
+        "Parque infantil limpio y en buen estado",
+        "Señalización adecuada (Normas, regla de estatura, emermédica).",
+        "Entregan el formato de consentimeinto para ingreso al parque"
+      ]],
+      ["BAÑOS", [
+        "Sanitarios y orinales limpios y en buen estado. Aseo general de los baños.  Extractor de aire limpio",
+        "Baños con buen olor",
+        "Espejos, jaboneras, dispensandor de toallas, papel y jabón surtidos, limpios y en buen estado",
+        "Canecas limpias, con bolsa y sin rebosar"
+      ]],
+      ["PRESENTACIÓN PERSONAL", [
+        "Uniforme limpio, ordenado, con la con combinación de colores definida.",
+        "Todos usan cofia y gorra",
+        "Sin maquillaje y sin accesorios",
+        "Uñas cortas, limpias y sin esmalte, afeitado ",
+        "Uso de escarapela"
+      ]],
+      ["PROTOCOLO DE ATENCIÓN", [
+        "Número de cajas en servicio",
+        "Presencia de personal en la barra que salude al cliente",
+        "Se evidencia orden al momento de entregar pedidos (Cliente, Rappi, Domicilios)",
+        "El colaborador hace contacto visual con el cliente",
+        "El colaborador saluda de forma amable al cliente",
+        "Entregan cresta, cartilla y crayola a los niños que ven",
+        "Informan novedad sobre tiempos de servicio mayor a la promesa de entrega?",
+        "Preguntan a nombre de quién se factura el pedido y si acumula puntos Colombia?",
+        "Recomiendan productos?",
+        "Muestran conocimiento de los productos cuando el cliente pregunta?",
+        "Ofrecen adicionales? Agrandar, acompañar",
+        "Responden al cliente que consulta sobre aliados para redimir puntos y/o descuentos?",
+        "Confirman el pedido antes de facturar",
+        "Confirman la cantidad de dinero que le reciben al cliente",
+        "Confirman al cliente el valor del cambio al momento de entregarlo",
+        "Indican el tiempo de entrega - 8 minutos",
+        "Agradecen al cliente por la compra y se despiden amablemente usando la palabra Frisby",
+        "En pagos con tarjeta, el datáfono funciona correctamente? Preguntan si requiere copia de vaucher?",
+        "Los precios exhibidos correponden a los del sistema",
+        "Entregan turnador al cliente, en buen estado y limpio.",
+        "Confirman el pedido que están entregando al cliente (despacho)",
+        "Indican el # de salsas que lleva el pedido, preguntan cuales desea",
+        "Entregan las salsas adicionales que el cliente solicita",
+        "Invita a calificar la experiencia (cajero y despacho)",
+        "Resuelven de manera óptima las quejas que presentan los clientes",
+        "En pedidos del kiosko, llegan los mensajes de texto a los clientes informando que está listo el pedido",
+        "Entregan la factura de los pedidos realizados por el kiosko o por sin fila"
+      ]],
+      ["PRODUCTO ENTREGADO/FÁBRICAS/OPERACIÓN", [
+        "Valide los atributos del pollo CROCANCIA, JUGOSIDAD, COLOR DORADO, APANADO SIN PARCHES, TEMPERATURA.",
+        "Mezcla pollo: Preparación, calidad, rotulación, vida útil. ",
+        "Tiempos de retención: Diligenciamiento y cumplimiento.",
+        "Máquinas: Niveles de aceite, color de aceite, buenas prácticas en el manejo de los equipos. Temperatura de los equipos.",
+        "Pollo y derivados: Verificación aleatoria de pesos y tamaños, calidad de producto. ",
+        "Ensamble: Cumplimiento de presentación, preparación y temperatura de productos ",
+        "Fábricas de productividad (prealistamiento, posicionamiento, uso de KDS, uso de pantalla producción, funcionamiento de equipos)",
+        "Cuadro de mando actualizado, grafica de eficiencia,tabla de  posicionamiento",
+        "Cumplen con protocolo Domicilio (comanda de la zona, comanda verificada, enrutado)",
+        "Cumple con el procedimiento de manejo de papa a la francesa (almacenamiento, tiempos de fritura y calidad)",
+        "Ausencia de agotados"
+      ]],
+      ["BIOSEGURIDAD", [
+        "Uso correcto del tapa bocas, careta, lavado de manos, uso del timer, aspersiones al ambiente, preparación, rotulación y uso de desinfectantes . Desinfección de manos en caja y barra"
+      ]],
+      ["EXPERIENCIA", [
+        "Tiempo promedio en fila",
+        "Tiempo promedio de atención",
+        "Tiempo promedio de entrega",
+        "Cumplen con promesa de entrega?",
+        "Se encuentran las ultimas visitas de jefe de zona",
+        "Estan los planes de accion de las ultimas visitas de jefe de zona"
+      ]]
+    ];
+    var out = []; var n = 0;
+    raw.forEach(function(sec){
+      var items = sec[1].map(function(desc){ n++; return [n, desc]; });
+      out.push({ name: sec[0], max: sec[1].length * 2, items: items });
+    });
+    return out;
+  })();
+
+  /* ============ DEFINICIÓN DE FORMATOS DISPONIBLES ============ */
+  var FORMATS = {
+    calidad: {
+      id: "calidad",
+      menuIcon: "🧪",
+      menuTitle: "Autoinspección de Calidad",
+      menuDesc: "Infraestructura, BPM, plan de saneamiento, plagas y sostenibilidad.",
+      formEyebrow: "VERIFICACIÓN DE CALIDAD",
+      unitFieldLabel: "RESTAURANTE",
+      filenamePrefix: "Autoinspeccion_Calidad",
+      sections: FA_SECTIONS,
+      weight4: FA_WEIGHT4
+    },
+    servicio: {
+      id: "servicio",
+      menuIcon: "🛎️",
+      menuTitle: "Formato de Servicio",
+      menuDesc: "Fachada, salón, atención al cliente, producto entregado y experiencia.",
+      formEyebrow: "FORMATO DE ATENCIÓN",
+      unitFieldLabel: "RESTAURANTE",
+      filenamePrefix: "Formato_Servicio",
+      sections: SERVICIO_SECTIONS,
+      weight4: SERVICIO_WEIGHT4
+    }
+  };
+
+  /* ============ ESTADO ACTIVO ============ */
+  var activeFormat = null;
+  var TOTAL_ITEMS = 0, TOTAL_MAX = 0;
+  var DRAFT_KEY = "", HIST_KEY = "";
+  var LAST_ELABORADOR_KEY = "autoinspeccion_ultimo_elaborador_v1";
+  var HIST_MAX = 15;
+
+  function weightOf(itemNum){ return activeFormat.weight4.indexOf(itemNum) !== -1 ? 4 : 2; }
+  function optionsFor(itemNum){
+    return weightOf(itemNum) === 4 ? ["4","3","2","1","0","NA"] : ["2","1","0","NA"];
+  }
+
+  function todayIso(){
+    var d = new Date();
+    var mm = String(d.getMonth()+1).padStart(2,"0");
+    var dd = String(d.getDate()).padStart(2,"0");
+    return d.getFullYear() + "-" + mm + "-" + dd;
+  }
+
+  var state = null;
+  function blankState(){
+    return { codigo:"", correoCodigo:"", correoCodigoAuto:true,
+             restaurante:"", elaboro:"", correoElaboro:"", correoElaboroAuto:true, fecha:todayIso(),
+             calif:{}, obs:{} };
+  }
+
+  function loadDraft(){
+    try{
+      var raw = localStorage.getItem(DRAFT_KEY);
+      if(!raw) return blankState();
+      var parsed = JSON.parse(raw);
+      return {
+        codigo: parsed.codigo || "",
+        correoCodigo: parsed.correoCodigo || "",
+        correoCodigoAuto: parsed.correoCodigoAuto !== false,
+        restaurante: parsed.restaurante || "",
+        elaboro: parsed.elaboro || "",
+        correoElaboro: parsed.correoElaboro || "",
+        correoElaboroAuto: parsed.correoElaboroAuto !== false,
+        fecha: parsed.fecha || "",
+        calif: parsed.calif || {},
+        obs: parsed.obs || {}
+      };
+    }catch(e){ return blankState(); }
+  }
+  function saveDraft(){
+    try{ localStorage.setItem(DRAFT_KEY, JSON.stringify(state)); }
+    catch(e){ /* almacenamiento no disponible: continuar sin bloquear la app */ }
+  }
+  function clearDraft(){
+    try{ localStorage.removeItem(DRAFT_KEY); }catch(e){}
+  }
+  function draftHasProgress(fid){
+    try{
+      var raw = localStorage.getItem("autoinspeccion_draft_v1_" + fid);
+      if(!raw) return false;
+      var p = JSON.parse(raw);
+      var n = 0;
+      for(var k in (p.calif||{})){ if(p.calif[k]!==undefined && p.calif[k]!=="") n++; }
+      return n > 0;
+    }catch(e){ return false; }
+  }
+
+  function loadHistorial(){
+    try{
+      var raw = localStorage.getItem(HIST_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+  function saveHistorial(list){
+    try{ localStorage.setItem(HIST_KEY, JSON.stringify(list)); return true; }
+    catch(e){ return false; }
+  }
+
+  function saveLastElaborador(nombre){
+    try{ localStorage.setItem(LAST_ELABORADOR_KEY, nombre || ""); }catch(e){}
+  }
+  function loadLastElaborador(){
+    try{ return localStorage.getItem(LAST_ELABORADOR_KEY) || ""; }catch(e){ return ""; }
+  }
+  function prefillElaboradorSiVacio(){
+    if(state.elaboro) return;
+    var last = loadLastElaborador();
+    if(!last) return;
+    state.elaboro = last;
+    state.correoElaboro = generarCorreoElaboro(last);
+    state.correoElaboroAuto = true;
+  }
+
+  /* ============ CALC ============ */
+  function computeScores(){
+    return computeScoresFor(state);
+  }
+  function computeScoresFor(snapshot){
+    var totalScore = 0, totalMax = 0;
+    var perSection = [];
+    activeFormat.sections.forEach(function(sec){
+      var secScore = 0, secMax = 0;
+      sec.items.forEach(function(it){
+        var num = it[0], w = weightOf(num);
+        var v = snapshot.calif[num];
+        if(v === "NA"){ return; }
+        secMax += w;
+        if(v !== undefined && v !== ""){ secScore += Number(v); }
+      });
+      perSection.push({score:secScore, max:secMax});
+      totalScore += secScore; totalMax += secMax;
+    });
+    return { totalScore:totalScore, totalMax:totalMax, perSection:perSection };
+  }
+
+  function scoreColorClass(pct){
+    if(pct < 85) return "fill-red";
+    if(pct <= 90) return "fill-yellow";
+    if(pct <= 95) return "fill-green";
+    return "fill-blue";
+  }
+  function applyScoreChipColor(el, pct){
+    el.classList.remove("fill-red","fill-yellow","fill-green","fill-blue");
+    el.classList.add("score-chip", scoreColorClass(pct));
+  }
+
+  function answeredCount(){
+    var n = 0;
+    for(var i=1;i<=TOTAL_ITEMS;i++){
+      var v = state.calif[i];
+      if(v !== undefined && v !== "") n++;
+    }
+    return n;
+  }
+  function missingItems(){
+    var arr = [];
+    for(var i=1;i<=TOTAL_ITEMS;i++){
+      var v = state.calif[i];
+      if(v === undefined || v === "") arr.push(i);
+    }
+    return arr;
+  }
+  function isReadyToDigitalizar(){
+    return answeredCount() === TOTAL_ITEMS &&
+           state.restaurante.trim() !== "" &&
+           state.elaboro.trim() !== "" &&
+           state.fecha.trim() !== "";
+  }
+
+  /* ============ RENDER: sections/items ============ */
+  var sectionsRoot = document.getElementById("sectionsRoot");
+
+  function buildSections(){
+    var html = "";
+    activeFormat.sections.forEach(function(sec, si){
+      html += '<div class="section-card" data-section="'+si+'">';
+      html += '  <div class="section-head" data-toggle="'+si+'">';
+      html += '    <div class="section-head-left">';
+      html += '      <span class="section-num mono">'+String(si+1).padStart(2,"0")+'</span>';
+      html += '      <span class="section-title">'+sec.name+'</span>';
+      html += '    </div>';
+      html += '    <div class="section-sub">';
+      html += '      <span class="section-score mono" data-section-score="'+si+'">0/'+sec.max+' pts CALIFICACIÓN: 0%</span>';
+      html += '      <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      html += '    </div>';
+      html += '  </div>';
+      html += '  <div class="items">';
+      sec.items.forEach(function(it){
+        var num = it[0], desc = it[1];
+        var opts = optionsFor(num);
+        html += '<div class="item-row" data-item-row="'+num+'">';
+        html += '  <div class="item-num mono">'+num+'</div>';
+        html += '  <div class="item-body">';
+        html += '    <p class="item-desc">'+desc+'</p>';
+        html += '    <div class="item-controls">';
+        html += '      <select class="score-select is-empty" data-item="'+num+'">';
+        html += '        <option value="" disabled selected>Cal.</option>';
+        opts.forEach(function(o){
+          html += '<option value="'+o+'">'+o+'</option>';
+        });
+        html += '      </select>';
+        html += '      <input type="text" class="evidencia-input" data-obs="'+num+'" placeholder="Observaciones / evidencia">';
+        html += '    </div>';
+        html += '  </div>';
+        html += '</div>';
+      });
+      html += '  </div>';
+      html += '</div>';
+    });
+    sectionsRoot.innerHTML = html;
+
+    sectionsRoot.querySelectorAll(".score-select").forEach(function(sel){
+      sel.addEventListener("change", function(){
+        var num = Number(sel.getAttribute("data-item"));
+        state.calif[num] = sel.value;
+        refreshAll(); saveDraft();
+      });
+    });
+    sectionsRoot.querySelectorAll(".evidencia-input").forEach(function(inp){
+      inp.addEventListener("input", function(){
+        var num = Number(inp.getAttribute("data-obs"));
+        state.obs[num] = inp.value;
+        saveDraft();
+      });
+    });
+    sectionsRoot.querySelectorAll(".section-head").forEach(function(head){
+      head.addEventListener("click", function(){
+        head.closest(".section-card").classList.toggle("collapsed");
+      });
+    });
+  }
+
+  function applyStateToInputs(){
+    document.getElementById("codigoInput").value = state.codigo;
+    document.getElementById("correoCodigoInput").value = state.correoCodigo;
+    document.getElementById("restaurantInput").value = state.restaurante;
+    document.getElementById("elaboroInput").value = state.elaboro;
+    document.getElementById("correoElaboroInput").value = state.correoElaboro;
+    document.getElementById("fechaInput").value = state.fecha;
+    updateFechaGhost();
+
+    sectionsRoot.querySelectorAll(".score-select").forEach(function(sel){
+      var num = Number(sel.getAttribute("data-item"));
+      var v = state.calif[num];
+      sel.value = (v !== undefined) ? v : "";
+    });
+    sectionsRoot.querySelectorAll(".evidencia-input").forEach(function(inp){
+      var num = Number(inp.getAttribute("data-obs"));
+      inp.value = state.obs[num] || "";
+    });
+  }
+
+  /* ============ RENDER: live totals / progress ============ */
+  function refreshAll(){
+    var calc = computeScores();
+    var pct = calc.totalMax > 0 ? Math.round((calc.totalScore/calc.totalMax)*100) : 0;
+
+    var livePctEl = document.getElementById("livePct");
+    var totalPctEl = document.getElementById("totalPct");
+    livePctEl.textContent = pct + "%";
+    totalPctEl.textContent = pct + "%";
+    applyScoreChipColor(livePctEl, pct);
+    applyScoreChipColor(totalPctEl, pct);
+    document.getElementById("livePts").textContent = calc.totalScore + " / " + calc.totalMax + " pts";
+    document.getElementById("totalSub").textContent = calc.totalScore + " de " + calc.totalMax + " puntos posibles (base " + TOTAL_MAX + ")";
+
+    activeFormat.weight4.forEach(function(num){
+      var isZero = state.calif[num] === "0";
+      var row = sectionsRoot.querySelector('[data-item-row="'+num+'"]');
+      var sel = sectionsRoot.querySelector('.score-select[data-item="'+num+'"]');
+      if(row) row.classList.toggle("zero-alert", isZero);
+      if(sel) sel.classList.toggle("zero-alert-select", isZero);
+    });
+
+    activeFormat.sections.forEach(function(sec, si){
+      var s = calc.perSection[si];
+      var secPct = s.max > 0 ? Math.round((s.score/s.max)*100) : 0;
+      var el = document.querySelector('[data-section-score="'+si+'"]');
+      if(el) el.textContent = s.score + "/" + s.max + " pts CALIFICACIÓN: " + secPct + "%";
+    });
+
+    sectionsRoot.querySelectorAll(".score-select").forEach(function(sel){
+      sel.classList.toggle("is-empty", sel.value === "");
+      sel.classList.toggle("is-na", sel.value === "NA");
+    });
+
+    var count = answeredCount();
+    document.getElementById("progressCount").textContent = count;
+    var pf = document.getElementById("progressFill");
+    pf.style.width = ((count/TOTAL_ITEMS)*100) + "%";
+    pf.classList.toggle("complete", count === TOTAL_ITEMS);
+
+    var missing = missingItems();
+    var banner = document.getElementById("missingBanner");
+    if(missing.length > 0 && missing.length < TOTAL_ITEMS){
+      banner.classList.remove("hidden");
+      banner.textContent = "Faltan por calificar los ítems: " + missing.join(", ");
+    } else {
+      banner.classList.add("hidden");
+    }
+
+    document.getElementById("btnDigitalizar").disabled = !isReadyToDigitalizar();
+  }
+
+  function updateFechaGhost(){
+    var ghost = document.getElementById("fechaGhost");
+    ghost.style.display = state.fecha ? "none" : "block";
+  }
+
+  /* ============ FOOTER FIELD LISTENERS ============ */
+  document.getElementById("codigoInput").addEventListener("input", function(e){
+    state.codigo = e.target.value;
+    if(state.correoCodigoAuto){
+      state.correoCodigo = generarCorreoCodigo(state.codigo);
+      document.getElementById("correoCodigoInput").value = state.correoCodigo;
+    }
+    saveDraft(); refreshAll();
+  });
+  document.getElementById("correoCodigoInput").addEventListener("input", function(e){
+    state.correoCodigo = e.target.value;
+    state.correoCodigoAuto = false;
+    saveDraft();
+  });
+  document.getElementById("restaurantInput").addEventListener("input", function(e){
+    state.restaurante = e.target.value; saveDraft(); refreshAll();
+  });
+  document.getElementById("elaboroInput").addEventListener("input", function(e){
+    state.elaboro = e.target.value;
+    if(state.correoElaboroAuto){
+      state.correoElaboro = generarCorreoElaboro(state.elaboro);
+      document.getElementById("correoElaboroInput").value = state.correoElaboro;
+    }
+    saveDraft(); refreshAll();
+  });
+  document.getElementById("correoElaboroInput").addEventListener("input", function(e){
+    state.correoElaboro = e.target.value;
+    state.correoElaboroAuto = false;
+    saveDraft();
+  });
+  var fechaInput = document.getElementById("fechaInput");
+  fechaInput.addEventListener("input", function(e){
+    state.fecha = e.target.value; updateFechaGhost(); saveDraft(); refreshAll();
+  });
+  document.getElementById("fechaGhost").addEventListener("click", function(){
+    if(typeof fechaInput.showPicker === "function"){
+      try{ fechaInput.showPicker(); }catch(e){ fechaInput.focus(); }
+    } else {
+      fechaInput.focus();
+    }
+  });
+
+  /* ============ RESET FLOW ============ */
+  var overlayReset = document.getElementById("overlayReset");
+  document.getElementById("btnReset").addEventListener("click", function(){
+    overlayReset.classList.remove("hidden");
+  });
+  document.getElementById("btnResetNo").addEventListener("click", function(){
+    overlayReset.classList.add("hidden");
+  });
+  document.getElementById("btnResetSi").addEventListener("click", function(){
+    state = blankState();
+    clearDraft();
+    prefillElaboradorSiVacio();
+    applyStateToInputs();
+    sectionsRoot.querySelectorAll(".section-card").forEach(function(c){ c.classList.remove("collapsed"); });
+    refreshAll();
+    saveDraft();
+    overlayReset.classList.add("hidden");
+    showToast("Formulario reiniciado. Listo para un nuevo reporte.");
+  });
+
+  /* ============ DIGITALIZAR FLOW ============ */
+  var overlayDig = document.getElementById("overlayDigitalizar");
+  document.getElementById("btnDigitalizar").addEventListener("click", function(){
+    if(!isReadyToDigitalizar()) return;
+    overlayDig.classList.remove("hidden");
+  });
+  document.getElementById("btnDigitalizarNo").addEventListener("click", function(){
+    overlayDig.classList.add("hidden");
+  });
+  document.getElementById("btnDigitalizarSi").addEventListener("click", function(){
+    overlayDig.classList.add("hidden");
+    digitalizarVisita();
+  });
+
+  function sanitizeForFilename(str){
+    return (str || "")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+      .replace(/[^a-zA-Z0-9]+/g,"_")
+      .replace(/^_+|_+$/g,"") || "SinNombre";
+  }
+  function fechaDisplay(iso){
+    if(!iso) return "";
+    var p = iso.split("-");
+    return p.length === 3 ? (p[2]+"/"+p[1]+"/"+p[0]) : iso;
+  }
+  function fechaFilename(iso){
+    if(!iso) return "SinFecha";
+    var p = iso.split("-");
+    return p.length === 3 ? (p[2]+"-"+p[1]+"-"+p[0]) : iso;
+  }
+
+  function buildPdf(snapshot){
+    var calc = computeScoresFor(snapshot);
+    var pct = calc.totalMax > 0 ? Math.round((calc.totalScore/calc.totalMax)*100) : 0;
+
+    var doc = new window.jspdf.jsPDF({ unit:"pt", format:"letter" });
+    var pageWidth = doc.internal.pageSize.getWidth();
+    var pageHeight = doc.internal.pageSize.getHeight();
+    var margin = 34;
+
+    doc.setFont("helvetica","bold");
+    doc.setFontSize(13);
+    doc.text(activeFormat.formEyebrow, margin, 40);
+    doc.setFontSize(9);
+    doc.setFont("helvetica","normal");
+    if(snapshot.codigo){ doc.text("CÓDIGO: " + snapshot.codigo, pageWidth - margin, 34, {align:"right"}); }
+    doc.text("CALIFICACIÓN: " + pct + "%", pageWidth - margin, 47, {align:"right"});
+
+    doc.setFontSize(10.5);
+    doc.setFont("helvetica","bold");
+    var unitLabelTxt = activeFormat.unitFieldLabel + ":";
+    doc.text(unitLabelTxt, margin, 62);
+    var TAB_GAP = 26;
+    var unitLabelWidth = doc.getTextWidth(unitLabelTxt);
+    doc.setFont("helvetica","normal");
+    doc.text(snapshot.restaurante || "", margin + unitLabelWidth + TAB_GAP, 62);
+
+    var ZERO_FILL = [252,237,176], ZERO_TEXT = [107,83,0];
+    var PCT_FILL = { red:[250,220,220], yellow:[252,237,176], green:[207,239,218], blue:[207,227,250] };
+    var PCT_TEXT = { red:[138,31,31], yellow:[107,83,0], green:[21,92,52], blue:[21,74,133] };
+    function pctBucket(p){
+      if(p < 85) return "red";
+      if(p <= 90) return "yellow";
+      if(p <= 95) return "green";
+      return "blue";
+    }
+
+    var body = [];
+    activeFormat.sections.forEach(function(sec, si){
+      var s = calc.perSection[si];
+      var secPct = s.max > 0 ? Math.round((s.score/s.max)*100) : 0;
+      var secBucket = pctBucket(secPct);
+      body.push([{ content: sec.name + "   —   " + s.score + "/" + s.max + " pts  CALIFICACIÓN: " + secPct + "%",
+                    colSpan:5, styles:{ fillColor: PCT_FILL[secBucket], textColor: PCT_TEXT[secBucket], fontStyle:"bold", fontSize:8.5 } }]);
+      sec.items.forEach(function(it){
+        var num = it[0], desc = it[1], w = weightOf(num);
+        var v = snapshot.calif[num];
+        var calText = (v === undefined || v === "") ? "" : v;
+        var isZeroAlert = (w === 4 && v === "0");
+        var cellStyle = isZeroAlert ? { fillColor:ZERO_FILL, textColor:ZERO_TEXT } : {};
+        body.push([
+          { content:String(num), styles:cellStyle },
+          { content:desc, styles:cellStyle },
+          { content:calText, styles:Object.assign({fontStyle:"bold"}, cellStyle) },
+          { content:String(w), styles:cellStyle },
+          { content:snapshot.obs[num] || "", styles:cellStyle }
+        ]);
+      });
+    });
+    var bucket = pctBucket(pct);
+    body.push([{ content:"PUNTAJE TOTAL", colSpan:2, styles:{fontStyle:"bold", fillColor:[27,27,31], textColor:[255,255,255]} },
+                { content:String(calc.totalScore), styles:{fontStyle:"bold", fillColor:[27,27,31], textColor:[255,255,255]} },
+                { content:String(calc.totalMax), styles:{fontStyle:"bold", fillColor:[27,27,31], textColor:[255,255,255]} },
+                { content:pct + "%", styles:{fontStyle:"bold", fillColor:PCT_FILL[bucket], textColor:PCT_TEXT[bucket]} }
+    ]);
+
+    doc.autoTable({
+      startY: 72,
+      margin:{ left:margin, right:margin, bottom:70 },
+      head:[["#","REQUISITO","CAL","MAX","EVIDENCIA / OBSERVACIONES"]],
+      body: body,
+      theme:"grid",
+      styles:{ font:"helvetica", fontSize:8, cellPadding:4, valign:"top", lineColor:[228,223,212], lineWidth:.5 },
+      headStyles:{ fillColor:[200,30,58], textColor:[255,255,255], fontStyle:"bold", fontSize:8.5 },
+      columnStyles:{
+        0:{ cellWidth:20, halign:"center" },
+        1:{ cellWidth:255 },
+        2:{ cellWidth:32, halign:"center", fontStyle:"bold" },
+        3:{ cellWidth:32, halign:"center" },
+        4:{ cellWidth:"auto" }
+      },
+      showHead:"everyPage",
+      didDrawPage: function(){
+        doc.setFont("helvetica","italic");
+        doc.setFontSize(8);
+        doc.setTextColor(120,116,108);
+        doc.text(CONFIG.creditText, pageWidth/2, pageHeight - 18, {align:"center"});
+      }
+    });
+
+    var finalY = doc.lastAutoTable.finalY + 26;
+    if(finalY > pageHeight - 90){ doc.addPage(); finalY = 50;
+      doc.setFont("helvetica","italic"); doc.setFontSize(8); doc.setTextColor(120,116,108);
+      doc.text(CONFIG.creditText, pageWidth/2, pageHeight - 18, {align:"center"});
+    }
+
+    doc.setFontSize(9.5);
+    doc.setFont("helvetica","bold");
+    doc.text("ELABORÓ:", margin, finalY);
+    doc.setFont("helvetica","normal");
+    doc.text(snapshot.elaboro || "", margin + 55, finalY);
+    if(snapshot.correoElaboro){
+      doc.setFontSize(8);
+      doc.text(snapshot.correoElaboro, margin + 55, finalY + 12);
+      doc.setFontSize(9.5);
+    }
+
+    doc.setFont("helvetica","bold");
+    doc.text("FECHA:", pageWidth - margin - 150, finalY);
+    doc.setFont("helvetica","normal");
+    doc.text(fechaDisplay(snapshot.fecha), pageWidth - margin - 105, finalY);
+
+    return { doc:doc, pct:pct, totalScore:calc.totalScore, totalMax:calc.totalMax };
+  }
+
+  function digitalizarVisita(){
+    var snapshot = JSON.parse(JSON.stringify(state));
+    saveLastElaborador(snapshot.elaboro);
+    var result = buildPdf(snapshot);
+    var filename = activeFormat.filenamePrefix + "_" + sanitizeForFilename(snapshot.restaurante) + "_" + fechaFilename(snapshot.fecha) + ".pdf";
+    var blob = result.doc.output("blob");
+
+    saveViaDownloadsCapability(filename, blob).then(function(){
+      addToHistorial(snapshot, filename, result);
+      showToast("Visita digitalizada. Descargando PDF…");
+      abrirBorradorCorreo(snapshot, filename);
+    }).catch(function(err){
+      addToHistorial(snapshot, filename, result);
+      fallbackDownload(blob, filename);
+      showToast("PDF generado.");
+      abrirBorradorCorreo(snapshot, filename);
+    });
+  }
+
+  function abrirBorradorCorreo(snapshot, filename){
+    var correos = [snapshot.correoCodigo, snapshot.correoElaboro]
+      .map(function(c){ return (c || "").trim(); })
+      .filter(function(c){ return c !== ""; });
+    var unicos = correos.filter(function(c, i){ return correos.indexOf(c) === i; });
+    if(unicos.length === 0) return;
+
+    var asunto = activeFormat.menuTitle + " - " + (snapshot.restaurante || "") + " - " + fechaDisplay(snapshot.fecha);
+    var cuerpo = "Adjunto el formato digitalizado.\n\n" +
+                 "IMPORTANTE: adjunta manualmente el archivo \"" + filename + "\" que se acaba de descargar " +
+                 "(por seguridad del navegador, el PDF no puede adjuntarse automáticamente).\n\n" +
+                 "Restaurante: " + (snapshot.restaurante || "") + "\n" +
+                 "Fecha: " + fechaDisplay(snapshot.fecha);
+
+    var mailto = "mailto:" + encodeURIComponent(unicos.join(",")).replace(/%2C/g, ",") +
+                 "?subject=" + encodeURIComponent(asunto) +
+                 "&body=" + encodeURIComponent(cuerpo);
+
+    setTimeout(function(){
+      try{ window.location.href = mailto; }catch(e){}
+    }, 600);
+  }
+
+  function saveViaDownloadsCapability(filename, blob){
+    return new Promise(function(resolve, reject){
+      if(!window.claude || typeof window.claude.use !== "function"){
+        reject(new Error("no-claude-runtime")); return;
+      }
+      window.claude.use("downloads").then(function(downloads){
+        if(!downloads){ reject(new Error("downloads-unavailable")); return; }
+        downloads.save({ filename:filename, data:blob }).then(resolve).catch(reject);
+      }).catch(reject);
+    });
+  }
+
+  function fallbackDownload(blob, filename){
+    try{
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); }, 400);
+    }catch(e){}
+  }
+
+  /* ============ HISTORIAL ============ */
+  function addToHistorial(snapshot, filename, result){
+    var list = loadHistorial();
+    list.unshift({
+      id: Date.now(),
+      restaurante: snapshot.restaurante,
+      fecha: snapshot.fecha,
+      elaboro: snapshot.elaboro,
+      score: result.totalScore,
+      max: result.totalMax,
+      pct: result.pct,
+      filename: filename,
+      timestamp: new Date().toISOString(),
+      snapshot: snapshot
+    });
+    if(list.length > HIST_MAX) list = list.slice(0, HIST_MAX);
+    var ok = saveHistorial(list);
+    if(!ok) showToast("PDF generado (el historial no se pudo guardar por espacio insuficiente).");
+    renderHistorial();
+  }
+
+  function renderHistorial(){
+    var list = loadHistorial();
+    document.getElementById("historyCount").textContent = list.length;
+    var panel = document.getElementById("historyPanel");
+    if(list.length === 0){
+      panel.innerHTML = '<div class="history-empty">Aún no hay visitas digitalizadas.</div>';
+      return;
+    }
+    var html = "";
+    list.forEach(function(h){
+      html += '<div class="history-item">';
+      html += '  <div class="hi-main">';
+      html += '    <div class="hi-name">'+(h.restaurante || "Sin nombre")+'</div>';
+      html += '    <div class="hi-meta">'+fechaDisplay(h.fecha)+' · '+h.score+'/'+h.max+' pts</div>';
+      html += '  </div>';
+      html += '  <div class="hi-pct mono">'+h.pct+'%</div>';
+      html += '  <button class="hi-dl" data-hid="'+h.id+'">Descargar</button>';
+      html += '</div>';
+    });
+    panel.innerHTML = html;
+    panel.querySelectorAll(".hi-dl").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = Number(btn.getAttribute("data-hid"));
+        var item = loadHistorial().filter(function(h){ return h.id === id; })[0];
+        if(!item) return;
+        var result = buildPdf(item.snapshot);
+        var blob = result.doc.output("blob");
+        saveViaDownloadsCapability(item.filename, blob).catch(function(){
+          fallbackDownload(blob, item.filename);
+        });
+      });
+    });
+  }
+
+  document.getElementById("historyToggle").addEventListener("click", function(){
+    document.getElementById("historyPanel").classList.toggle("hidden");
+  });
+
+  /* ============ TOAST ============ */
+  var toastTimer = null;
+  function showToast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 3200);
+  }
+
+  /* ============ MENÚ / SELECCIÓN DE FORMATO ============ */
+  var homeScreen = document.getElementById("homeScreen");
+  var appScreen = document.getElementById("appScreen");
+
+  function renderFormatCards(){
+    var root = document.getElementById("formatCards");
+    var html = "";
+    Object.keys(FORMATS).forEach(function(fid){
+      var f = FORMATS[fid];
+      var n = f.sections.reduce(function(a,s){return a+s.items.length;},0);
+      var inProgress = draftHasProgress(fid);
+      html += '<div class="format-card" data-format="'+fid+'">';
+      html += '  <div class="format-card-top">';
+      html += '    <span class="format-icon">'+f.menuIcon+'</span>';
+      html += '  </div>';
+      html += '  <div class="format-name">'+f.menuTitle+'</div>';
+      html += '  <p class="format-desc">'+f.menuDesc+'</p>';
+      html += '  <div class="format-meta">';
+      html += '    <span class="format-count">'+n+' ítems de verificación</span>';
+      html += '    <span class="format-cta'+(inProgress?' continue':'')+'">'+(inProgress?'Continuar':'Comenzar')+'</span>';
+      html += '  </div>';
+      html += '</div>';
+    });
+    root.innerHTML = html;
+    root.querySelectorAll(".format-card").forEach(function(card){
+      card.addEventListener("click", function(){
+        selectFormat(card.getAttribute("data-format"));
+      });
+    });
+  }
+
+  function selectFormat(fid){
+    activeFormat = FORMATS[fid];
+    TOTAL_MAX = activeFormat.sections.reduce(function(a,s){return a+s.max;},0);
+    TOTAL_ITEMS = activeFormat.sections.reduce(function(a,s){return a+s.items.length;},0);
+    DRAFT_KEY = "autoinspeccion_draft_v1_" + fid;
+    HIST_KEY = "autoinspeccion_historial_v1_" + fid;
+
+    document.title = activeFormat.menuTitle;
+    document.getElementById("formEyebrow").textContent = activeFormat.formEyebrow;
+    document.getElementById("formTitle").textContent = activeFormat.menuTitle;
+    document.getElementById("restaurantInput").placeholder = activeFormat.unitFieldLabel;
+    document.getElementById("progressTotal").textContent = TOTAL_ITEMS;
+    document.getElementById("creditLine").textContent = CONFIG.creditText;
+
+    buildSections();
+    state = loadDraft();
+    prefillElaboradorSiVacio();
+    applyStateToInputs();
+    refreshAll();
+    renderHistorial();
+    renderScreenWatermark();
+
+    homeScreen.classList.add("hidden");
+    appScreen.classList.remove("hidden");
+    document.body.classList.add("has-app");
+    window.scrollTo(0,0);
+  }
+
+  function goToMenu(){
+    appScreen.classList.add("hidden");
+    homeScreen.classList.remove("hidden");
+    document.body.classList.remove("has-app");
+    document.title = "Formatos de Visita";
+    renderFormatCards();
+    window.scrollTo(0,0);
+  }
+
+  document.getElementById("btnBackToMenu").addEventListener("click", goToMenu);
+
+  function renderScreenWatermark(){
+    var wm = document.getElementById("screenWatermark");
+    var rows = [];
+    for(var i=0;i<14;i++){ rows.push('<span>'+CONFIG.creditText+' &nbsp; '+CONFIG.creditText+' &nbsp; '+CONFIG.creditText+'</span>'); }
+    wm.innerHTML = '<div style="display:flex; flex-direction:column; gap:22px;">'+rows.join("")+'</div>';
+  }
+
+  /* ============ INIT ============ */
+  renderFormatCards();
+
+})();
+</script>
+</body>
+</html>
