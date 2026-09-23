@@ -1081,18 +1081,28 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     var totalPctEl = document.getElementById("totalPct");
     livePctEl.textContent = pct + "%";
     totalPctEl.textContent = pct + "%";
-    applyScoreChipColor(livePctEl, pct);
-    applyScoreChipColor(totalPctEl, pct);
-    document.getElementById("livePts").textContent = calc.totalScore + " / " + calc.totalMax + " pts";
-    document.getElementById("totalSub").textContent = calc.totalScore + " de " + calc.totalMax + " puntos posibles (base " + TOTAL_MAX + ")";
 
+    var hasZeroCritico = false;
     for(var wi=1; wi<=TOTAL_ITEMS; wi++){
       var isZero = (weightOf(wi) === 4 && state.calif[wi] === "0");
       var row = sectionsRoot.querySelector('[data-item-row="'+wi+'"]');
       var sel = sectionsRoot.querySelector('.score-select[data-item="'+wi+'"]');
       if(row) row.classList.toggle("zero-alert", isZero);
       if(sel) sel.classList.toggle("zero-alert-select", isZero);
+      if(isZero) hasZeroCritico = true;
     }
+
+    if(hasZeroCritico){
+      livePctEl.classList.remove("fill-red","fill-yellow","fill-green","fill-blue");
+      livePctEl.classList.add("score-chip","fill-yellow");
+      totalPctEl.classList.remove("fill-red","fill-yellow","fill-green","fill-blue");
+      totalPctEl.classList.add("score-chip","fill-yellow");
+    } else {
+      applyScoreChipColor(livePctEl, pct);
+      applyScoreChipColor(totalPctEl, pct);
+    }
+    document.getElementById("livePts").textContent = calc.totalScore + " / " + calc.totalMax + " pts";
+    document.getElementById("totalSub").textContent = calc.totalScore + " de " + calc.totalMax + " puntos posibles (base " + TOTAL_MAX + ")";
 
     activeFormat.sections.forEach(function(sec, si){
       var s = calc.perSection[si];
@@ -1367,7 +1377,8 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
                  "IMPORTANTE: adjunta manualmente el archivo \"" + filename + "\" que se acaba de descargar " +
                  "(por seguridad del navegador, el PDF no puede adjuntarse automáticamente).\n\n" +
                  "Restaurante: " + (snapshot.restaurante || "") + "\n" +
-                 "Fecha: " + fechaDisplay(snapshot.fecha);
+                 "Fecha: " + fechaDisplay(snapshot.fecha) + "\n\n" +
+                 "RECUERDE QUE DISPONE DE 5 DÍAS HÁBILES PARA REALIZAR Y COMPARTIR EL PLAN DE ACCIÓN DE ESTA VISITA";
 
     var mailto = "mailto:" + encodeURIComponent(unicos.join(",")).replace(/%2C/g, ",") +
                  "?subject=" + encodeURIComponent(asunto) +
