@@ -274,6 +274,22 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
   .totals-card .t-sub{ font-size:11.5px; color:#C9C4B8; margin-top:3px; }
   .totals-card .t-pct{ font-family:"Space Mono",monospace; font-size:28px; font-weight:800; }
 
+  /* ---------- hallazgos ---------- */
+  .hallazgos-card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:16px 15px; margin-bottom:14px; box-shadow:var(--shadow);
+  }
+  .hallazgos-card .field-label{ margin-bottom:4px; }
+  .hallazgos-hint{ font-size:11.5px; color:var(--muted); margin-bottom:8px; }
+  .hallazgos-textarea{
+    width:100%; font-family:inherit; font-size:14.5px; font-weight:500;
+    padding:11px 12px; border-radius:8px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink); resize:vertical;
+    min-height:90px; line-height:1.4;
+  }
+  .hallazgos-textarea::placeholder{ color:var(--muted); font-weight:500; }
+  .hallazgos-textarea:focus{ outline:2px solid var(--red); outline-offset:1px; }
+
   /* ---------- footer fields ---------- */
   .footer-card{
     background:var(--card); border:1px solid var(--line); border-radius:12px;
@@ -468,6 +484,12 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
         <div class="t-sub" id="totalSub">0 de 0 puntos posibles</div>
       </div>
       <div class="t-pct mono" id="totalPct">0%</div>
+    </div>
+
+    <div class="hallazgos-card">
+      <div class="field-label">HALLAZGOS</div>
+      <div class="hallazgos-hint">Novedades encontradas en la visita que no están relacionadas en los puntos anteriores</div>
+      <textarea class="hallazgos-textarea" id="hallazgosInput" placeholder="Describa aquí las novedades adicionales encontradas..."></textarea>
     </div>
 
     <div class="footer-card">
@@ -883,7 +905,7 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
   function blankState(){
     return { codigo:"", correoCodigo:"", correoCodigoAuto:true,
              restaurante:"", elaboro:"", correoElaboro:"", correoElaboroAuto:true, fecha:todayIso(),
-             calif:{}, obs:{} };
+             calif:{}, obs:{}, hallazgos:"" };
   }
 
   function loadDraft(){
@@ -901,7 +923,8 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
         correoElaboroAuto: parsed.correoElaboroAuto !== false,
         fecha: parsed.fecha || "",
         calif: parsed.calif || {},
-        obs: parsed.obs || {}
+        obs: parsed.obs || {},
+        hallazgos: parsed.hallazgos || ""
       };
     }catch(e){ return blankState(); }
   }
@@ -1075,6 +1098,7 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     document.getElementById("elaboroInput").value = state.elaboro;
     document.getElementById("correoElaboroInput").value = state.correoElaboro;
     document.getElementById("fechaInput").value = state.fecha;
+    document.getElementById("hallazgosInput").value = state.hallazgos || "";
     updateFechaGhost();
 
     sectionsRoot.querySelectorAll(".score-select").forEach(function(sel){
@@ -1195,6 +1219,9 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     } else {
       fechaInput.focus();
     }
+  });
+  document.getElementById("hallazgosInput").addEventListener("input", function(e){
+    state.hallazgos = e.target.value; saveDraft();
   });
 
   /* ============ RESET FLOW ============ */
@@ -1336,6 +1363,28 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
         doc.text(CONFIG.creditText + " — " + CONFIG.legalNotice, pageWidth/2, pageHeight - 18, {align:"center"});
       }
     });
+
+    if(snapshot.hallazgos && snapshot.hallazgos.trim() !== ""){
+      var hallazgosStartY = doc.lastAutoTable.finalY + 10;
+      if(hallazgosStartY > pageHeight - 100){ doc.addPage(); hallazgosStartY = 50;
+        doc.setFont("helvetica","italic"); doc.setFontSize(7); doc.setTextColor(120,116,108);
+        doc.text(CONFIG.creditText + " — " + CONFIG.legalNotice, pageWidth/2, pageHeight - 18, {align:"center"});
+      }
+      doc.autoTable({
+        startY: hallazgosStartY,
+        margin:{ left:margin, right:margin, bottom:70 },
+        head:[["HALLAZGOS"]],
+        body:[[snapshot.hallazgos]],
+        theme:"grid",
+        styles:{ font:"helvetica", fontSize:8.5, cellPadding:5, valign:"top", lineColor:[228,223,212], lineWidth:.5 },
+        headStyles:{ fillColor:[27,27,31], textColor:[255,255,255], fontStyle:"bold", fontSize:9 },
+        showHead:"everyPage",
+        didDrawPage: function(){
+          doc.setFont("helvetica","italic"); doc.setFontSize(7); doc.setTextColor(120,116,108);
+          doc.text(CONFIG.creditText + " — " + CONFIG.legalNotice, pageWidth/2, pageHeight - 18, {align:"center"});
+        }
+      });
+    }
 
     var finalY = doc.lastAutoTable.finalY + 26;
     if(finalY > pageHeight - 90){ doc.addPage(); finalY = 50;
