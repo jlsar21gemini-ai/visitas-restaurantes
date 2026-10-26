@@ -14,18 +14,7 @@
   reservados.
 -->
 <!DOCTYPE html>
-<html lang="es"><script id="externs">//variables to add to the script to send back when needed
-
-window.HSASE_preventDataTypes = '';
-window.HSASE_detectDataTypes = '41864350-30ea-4779-903f-aeef2c959a0c,5eb05ef4-5843-474b-8a0d-ce2243dd4de6,902eb4c7-aabd-44a3-90a9-6e22e22c2c19,ad3795ff-b1e2-4754-a3bd-891181370d43,d2c4411f-dd0e-495b-b856-5686e68892b4,efebfa3e-fae2-4c47-9511-f887a67c6033';
-window.HSASE_warnDataTypes = '';
-window.HSASE_FailType = 'open';
-window.HSASE_MinimalLikelihood = 'LIKELY';
-window.HSASE_Rules = '[{\"name\":\"Prueba cedulas\",\"id\":\"69bad068d7e33842c4822638\",\"number\":\"1\",\"operation\":\"ACCEPT\",\"preventDataTypes\":null,\"detectDataTypes\":[\"ad3795ff-b1e2-4754-a3bd-891181370d43\",\"efebfa3e-fae2-4c47-9511-f887a67c6033\"],\"warnDataTypes\":null},{\"name\":\"PRUEBA\",\"id\":\"69962bdd7daddb7b9bd5768e\",\"number\":\"2\",\"operation\":\"ACCEPT\",\"preventDataTypes\":null,\"detectDataTypes\":[\"41864350-30ea-4779-903f-aeef2c959a0c\",\"5eb05ef4-5843-474b-8a0d-ce2243dd4de6\",\"902eb4c7-aabd-44a3-90a9-6e22e22c2c19\",\"d2c4411f-dd0e-495b-b856-5686e68892b4\"],\"warnDataTypes\":null}]';
-window.HSASE_UploadURL = '/_cp_32a94697ca774284/dlp/upload';
-window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
-</script><script id="FilesDLP" defer="defer" crossorigin="anonymous">(function(){const m="change",y="paste",E="drop",ee=()=>{},U="self",H="parent";if(window.__dlp_owner)return;function A(e){document.readyState==="complete"||document.readyState==="interactive"?setTimeout(e,1):document.addEventListener("DOMContentLoaded",e)}let g=null;function u(){if(g)return g;let e=window;try{for(;e.parent&&e.parent!==e;){const r=e.parent;r.location.origin,r.document,e=r}}catch{}return g=e,g}function D(e){const r=u();let t;try{t=new URL(e,r.location.origin)}catch(n){console.error("[DLP] invalid block URL, not navigating:",e,n);return}if(t.origin!==r.location.origin||!t.pathname.startsWith("/_cp_")){console.error("[DLP] refusing to navigate to non-local-route block URL:",t.href);return}const i=r.CustomEvent||CustomEvent;r.dispatchEvent(new i("dlp:block",{detail:{url:t.href}})),r.location.href=t.href}function o(e,r,t){e.style.setProperty(r,t,"important")}function B(e){const r=u().document;if(!r.getElementById("__dlp_styles")){const n=r.createElement("style");n.id="__dlp_styles",n.textContent="@keyframes __dlp_spin{to{transform:rotate(360deg)}}",(r.head||r.documentElement).appendChild(n)}const t=r.createElement("div");o(t,"position","fixed"),o(t,"top","0"),o(t,"left","0"),o(t,"width","100%"),o(t,"height","100%"),o(t,"background","rgba(50,50,50,0.5)"),o(t,"z-index","2147483647"),o(t,"display","flex"),o(t,"align-items","center"),o(t,"justify-content","center");const i=r.createElement("div");return o(i,"background","#fff"),o(i,"border-radius","12px"),o(i,"padding","28px 36px"),o(i,"display","flex"),o(i,"flex-direction","column"),o(i,"align-items","center"),o(i,"gap","16px"),o(i,"box-shadow","0 8px 32px rgba(0,0,0,0.25)"),e&&o(i,"max-width",e),t.setAttribute("dir","ltr"),t.appendChild(i),{overlay:t,card:i}}function G(e){o(e,"margin","0"),o(e,"font-size","15px"),o(e,"color","#374151"),o(e,"text-align","center"),o(e,"font-family",'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif')}function F(e,r){o(e,"padding","10px 24px"),o(e,"border-radius","6px"),o(e,"font-size","14px"),o(e,"cursor","pointer"),o(e,"font-family",'-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif'),r?(o(e,"border","none"),o(e,"background","#2563eb"),o(e,"color","#fff")):(o(e,"border","1px solid #d1d5db"),o(e,"background","#fff"),o(e,"color","#374151"))}function T(){const e=u(),r=e.document;if(!r.body)return function(){};if(e.__dlp_loadingCount=(e.__dlp_loadingCount||0)+1,!e.__dlp_loadingOverlay){const{overlay:t,card:i}=B("420px"),n=r.createElement("div");o(n,"width","36px"),o(n,"height","36px"),o(n,"border-radius","50%"),o(n,"border-width","4px"),o(n,"border-style","solid"),o(n,"border-color","#e5e7eb"),o(n,"border-top-color","#2563eb"),o(n,"animation","__dlp_spin 0.75s linear infinite");const a=r.createElement("p");a.textContent="Scanning content for sensitive data. This may take a moment.",G(a),i.appendChild(n),i.appendChild(a),r.body.appendChild(t),e.__dlp_loadingOverlay=t}return function(){if(e.__dlp_loadingCount-=1,!(e.__dlp_loadingCount>0)&&e.__dlp_loadingOverlay){try{e.__dlp_loadingOverlay.parentNode&&e.__dlp_loadingOverlay.parentNode.removeChild(e.__dlp_loadingOverlay)}catch(i){console.error("[DLP] failed to remove loading overlay:",i)}e.__dlp_loadingOverlay=null}}}const b="allow",w="warn",p="prevent";async function R(e){const r=window.HSASE_Rules||"",t=Object.fromEntries(Object.entries({"CP-DLP":"1",preventDataTypes:window.HSASE_preventDataTypes,detectDataTypes:window.HSASE_detectDataTypes,warnDataTypes:window.HSASE_warnDataTypes,failType:window.HSASE_FailType,minimalLikelihood:window.HSASE_MinimalLikelihood,rules:r}).filter(([,s])=>s!==void 0)),i=new URL(window.HSASE_UploadURL,window.location.origin).href,n=await window.fetch(i,{method:"POST",headers:t,body:e});if(!n.ok)throw new Error(`DLP scan service error: ${n.status}`);const a=await n.json(),l=a&&a.verdict;if(l!==b&&l!==w&&l!==p)throw new Error(`DLP scan returned unknown verdict: ${l}`);return l}function P(){return new Promise(function(e){const r=u().document;if(!r.body){e(!1);return}const{overlay:t,card:i}=B("420px"),n=r.createElement("p");n.textContent="Sensitive data detected. Uploading this file may violate your organization's security policy. Do you want to proceed?",G(n);const a=r.createElement("div");o(a,"display","flex"),o(a,"gap","12px");const l=r.createElement("button");l.id="__dlp_warn_cancel",l.textContent="Cancel",F(l,!1);const s=r.createElement("button");s.id="__dlp_warn_proceed",s.textContent="Proceed",F(s,!0);function d(c){try{t.parentNode&&t.parentNode.removeChild(t)}catch(f){console.error("[DLP] failed to remove warn dialog:",f)}e(c)}l.addEventListener("click",function(){d(!1)}),s.addEventListener("click",function(){d(!0)}),a.appendChild(l),a.appendChild(s),i.appendChild(n),i.appendChild(a),r.body.appendChild(t)})}function x(e,r){if(!e.target)return;const t=new DataTransfer;for(const n of r)t.items.add(n);let i;e.type===E?(i=new DragEvent(E,{bubbles:!0,cancelable:!0}),Object.defineProperty(i,"dataTransfer",{value:t,configurable:!0})):e.type===y?(i=new ClipboardEvent(y,{bubbles:!0,cancelable:!0}),Object.defineProperty(i,"clipboardData",{value:t,configurable:!0})):i=new Event(m,{bubbles:!0,cancelable:!0}),i.processed=!0,e.target.dispatchEvent(i)}async function L(e,r){e.preventDefault(),e.stopPropagation();const t=Array.from(r),i=await k(t);if(i===w){if(!await P()){e.target&&e.target.type==="file"&&(e.target.value="");return}x(e,t);return}if(i===p){D(window.HSASE_BlockURL);return}x(e,t)}async function k(e){const r=e.filter(i=>i.size>0);if(r.length===0)return b;const t=T();try{const i=new FormData;for(const a of r)i.append("file",a);return await R(i)}catch(i){return console.error("[DLP] upload check failed:",i),window.HSASE_FailType==="close"?p:b}finally{t()}}function S(e){if(e.target.type==="file"){if(e.processed||!e.target.files||e.target.files.length===0)return;L(e,e.target.files).catch(r=>console.error("[DLP] unhandled upload error:",r))}}function j(e){const r=e.createElement;e.createElement=function(t){const i=r.call(e,t);return t==="input"&&i.addEventListener(m,S,!0),i},e.addEventListener(m,S,!0)}const h=new WeakSet,_=new WeakSet;function I(e){if(!("showOpenFilePicker"in e))return;function r(i){return async function(n){let a;const l=i();let s,d;try{if(s=await l.call(e,n),d=await Promise.all(s.map(f=>f.getFile())),d.length===0)return s;const c=await k(d);if(c===p){D(window.HSASE_BlockURL);return}if(c===w&&!await P())throw new e.DOMException("The user aborted a request.","AbortError");return s}catch(c){if(c&&c.name==="AbortError"||!s)throw c;if(console.error("[DLP] upload check failed:",c),window.HSASE_FailType==="close"){D(window.HSASE_BlockURL);return}return s}}}const t=e.showOpenFilePicker;if(t){e.showOpenFilePicker=r(()=>t);return}try{Object.defineProperty(e,"showOpenFilePicker",{configurable:!0,enumerable:!0,get(){return t},set(i){i&&Object.defineProperty(e,"showOpenFilePicker",{value:r(()=>i),writable:!0,configurable:!0,enumerable:!0})}})}catch(i){console.error("[DLP] failed to install showOpenFilePicker accessor:",i)}}function N(e){const r=e.FileSystemFileHandle;if(!r||!r.prototype)return;const t=r.prototype;if(_.has(t))return;const i=t.getFile;if(typeof i!="function")return;async function n(){if(!h.has(this))return i.call(this);const a=await i.call(this),l=await k([a]);if(l===p){D(window.HSASE_BlockURL);return}if(l===w&&!await P())throw new e.DOMException("The user aborted a request.","AbortError");return a}try{t.getFile=n,_.add(t)}catch(a){console.error("[DLP] failed to patch FileSystemFileHandle.prototype.getFile:",a)}}function W(e){if(!("showDirectoryPicker"in e))return;function r(i){return async function(n){const a=await i().call(e,n);return a&&typeof a=="object"&&h.add(a),a}}const t=e.showDirectoryPicker;if(t){e.showDirectoryPicker=r(()=>t);return}try{Object.defineProperty(e,"showDirectoryPicker",{configurable:!0,enumerable:!0,get(){return t},set(i){i&&Object.defineProperty(e,"showDirectoryPicker",{value:r(()=>i),writable:!0,configurable:!0,enumerable:!0})}})}catch(i){console.error("[DLP] failed to install showDirectoryPicker accessor:",i)}}function M(e){const r=e.FileSystemDirectoryHandle;if(!r||!r.prototype)return;const t=r.prototype;if(_.has(t))return;const i=(d,c)=>(c&&h.has(d)&&typeof c=="object"&&h.add(c),c),n=t.getFileHandle,a=t.getDirectoryHandle,l=t.entries,s=t.values;try{typeof n=="function"&&(t.getFileHandle=async function(d,c){return i(this,await n.call(this,d,c))}),typeof a=="function"&&(t.getDirectoryHandle=async function(d,c){return i(this,await a.call(this,d,c))}),typeof l=="function"&&(t.entries=async function*(){for await(const[d,c]of l.call(this))yield[d,i(this,c)]},t[Symbol.asyncIterator]=t.entries),typeof s=="function"&&(t.values=async function*(){for await(const d of s.call(this))yield i(this,d)}),_.add(t)}catch(d){console.error("[DLP] failed to patch FileSystemDirectoryHandle traversal:",d)}}function V(e){if(e.processed)return;const r=e.clipboardData||window.clipboardData;if(!r)return;const t=r.items;if(!t||!t.length)return;const i=Array.from(t).filter(n=>n.kind==="file").map(n=>n.getAsFile()).filter(Boolean);i.length&&L(e,i).catch(n=>console.error("[DLP] unhandled upload error:",n))}function q(e){e.processed||!e.dataTransfer||!e.dataTransfer.files||!e.dataTransfer.files.length||L(e,e.dataTransfer.files).catch(r=>console.error("[DLP] unhandled upload error:",r))}function z(e){j(e),e.addEventListener(E,q,!0),e.addEventListener(y,V,!0)}function J(e){e.__dlp_domHooked||(e.__dlp_domHooked=!0,z(e))}function K(e){if(e.__dlp_observed)return;let r;try{r=e.querySelectorAll("iframe")}catch(t){console.error("[DLP] iframe sweep failed:",t);return}r.forEach(v),Q(e)}function O(e){I(e),W(e),N(e),M(e)}function $(e){J(e),K(e)}function v(e){e.__dlp_loadHooked||(e.__dlp_loadHooked=!0,e.addEventListener("load",function(){C(e)})),C(e)}function C(e){let r,t;try{if(r=e.contentWindow,t=e.contentDocument,!r||!t)return;r.location.origin}catch{return}if(r.__dlp_owner!==U){if(!r.__dlp_owner){const i=e.getAttribute&&e.getAttribute("src");if(i&&i!=="about:blank"&&r.location.href==="about:blank")return;r.__dlp_owner=H;try{O(r)}catch(n){console.error("[DLP] failed to install window hook into iframe:",n)}}$(t)}}function Q(e){if(e.__dlp_observed)return;const r=e.defaultView,t=r&&r.MutationObserver;if(typeof t!="function")return;e.__dlp_observed=!0;const i=new t(function(n){for(const a of n)for(const l of a.addedNodes)l.nodeType===1&&(l.tagName==="IFRAME"?v(l):typeof l.querySelectorAll=="function"&&l.querySelectorAll("iframe").forEach(v))});try{const n=e.body||e.documentElement||e;i.observe(n,{childList:!0,subtree:!0})}catch(n){console.error("[DLP] failed to observe document for iframes:",n)}}window.__dlp_owner=U,O(window),A(function(){$(document)})})();
-</script>
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -133,9 +122,12 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     display:flex; flex-direction:column; gap:0;
   }
   .back-link{
-    background:none; border:none; color:#C9C4B8; font-family:inherit; font-size:11px;
-    font-weight:600; cursor:pointer; padding:0 0 2px; display:flex; align-items:center; gap:4px;
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.45); color:#fff;
+    font-family:inherit; font-size:11.5px; font-weight:700; cursor:pointer;
+    padding:4px 10px; margin-bottom:4px; border-radius:7px; align-self:flex-start;
+    display:flex; align-items:center; gap:4px;
   }
+  .back-link:active{ background:rgba(255,255,255,.22); }
   .brand .eyebrow{
     font-size:10px; letter-spacing:.08em; color:#C9A9AF; font-family:"Space Mono",monospace;
   }
@@ -354,6 +346,18 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     padding:7px 10px; font-size:11.5px; font-weight:700; color:var(--ink); cursor:pointer; font-family:inherit;
   }
   .history-empty{ padding:20px 15px; text-align:center; color:var(--muted); font-size:13px; }
+  .history-note{
+    padding:11px 15px; font-size:11.5px; line-height:1.4; color:var(--muted);
+    background:var(--paper); border-bottom:1px solid var(--line);
+  }
+  .history-dl-all{
+    display:block; width:calc(100% - 30px); margin:10px 15px 12px; padding:10px;
+    background:none; border:1.5px solid var(--line); border-radius:8px;
+    font-size:12.5px; font-weight:700; color:var(--ink); cursor:pointer; font-family:inherit;
+  }
+  .field-error{ font-size:11.5px; color:var(--red-deep); margin-top:5px; font-weight:600; }
+  .field-error.hidden{ display:none; }
+  .field-input.is-invalid{ border-color:var(--red); }
 
   /* ---------- action bar ---------- */
   .action-bar{
@@ -398,11 +402,15 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
   /* ---------- toast ---------- */
   .toast{
     position:fixed; left:50%; bottom:100px; transform:translateX(-50%) translateY(20px);
-    background:var(--ink); color:var(--paper); padding:11px 18px; border-radius:99px;
+    background:var(--ink); color:var(--paper); padding:11px 18px; border-radius:14px;
     font-size:13px; font-weight:600; opacity:0; pointer-events:none; transition:all .25s ease;
-    z-index:60; white-space:nowrap; box-shadow:0 6px 20px rgba(0,0,0,.25);
+    z-index:60; white-space:normal; text-align:center; width:max-content; max-width:min(92vw, 420px);
+    line-height:1.4; box-shadow:0 6px 20px rgba(0,0,0,.25);
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.toast-alert{
+    background:var(--card); color:var(--red); border:2px solid var(--red); font-weight:800;
+  }
 
   .missing-banner{
     background:rgba(200,30,58,.08); border:1px solid rgba(200,30,58,.25); color:var(--red-deep);
@@ -442,7 +450,7 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
   <div class="topbar" id="topbarEl">
     <div class="topbar-row">
       <div class="brand">
-        <button class="back-link" id="btnBackToMenu">← Formatos de visita</button>
+        <button class="back-link" id="btnBackToMenu">← Regresar al Menú Principal</button>
         <span class="eyebrow" id="formEyebrow">—</span>
         <h1 id="formTitle">—</h1>
       </div>
@@ -492,6 +500,12 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
       <textarea class="hallazgos-textarea" id="hallazgosInput" placeholder="Describa aquí las novedades adicionales encontradas..."></textarea>
     </div>
 
+    <div class="hallazgos-card">
+      <div class="field-label">RECIBIÓ VISITA</div>
+      <div class="hallazgos-hint">Nombre de la persona que atendió la visita (obligatorio)</div>
+      <input type="text" id="recibioInput" class="field-input" placeholder="RECIBIÓ VISITA" autocomplete="off">
+    </div>
+
     <div class="footer-card">
       <div class="footer-grid">
         <div class="elaboro-stack">
@@ -504,11 +518,18 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
             <input type="text" id="correoElaboroInput" class="field-input email-input" placeholder="correo@frisby.com.co" autocomplete="off">
           </div>
         </div>
-        <div>
-          <div class="field-label">FECHA</div>
-          <div class="date-wrap">
-            <input type="date" id="fechaInput" class="field-input">
-            <span class="date-ghost" id="fechaGhost">FECHA</span>
+        <div class="elaboro-stack">
+          <div>
+            <div class="field-label">CC (COPIA DEL CORREO)</div>
+            <input type="text" id="correoCCInput" class="field-input email-input" placeholder="correo@frisby.com.co" autocomplete="off">
+            <div class="field-error hidden" id="correoCCError">Correo no válido. Revísalo (puedes separar varios con coma).</div>
+          </div>
+          <div>
+            <div class="field-label">FECHA</div>
+            <div class="date-wrap">
+              <input type="date" id="fechaInput" class="field-input">
+              <span class="date-ghost" id="fechaGhost">FECHA</span>
+            </div>
           </div>
         </div>
       </div>
@@ -542,7 +563,7 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
 <div class="overlay hidden" id="overlayReset">
   <div class="modal">
     <p>¿Seguro que deseas iniciar un nuevo reporte?</p>
-    <div class="modal-sub">Se borrarán las calificaciones, observaciones, restaurante, elaboró y fecha actuales. Esta acción no afecta el historial ya digitalizado.</div>
+    <div class="modal-sub">Se borrarán las calificaciones, observaciones, hallazgos, restaurante, elaboró, recibió visita y fecha actuales, y el correo CC volverá a su valor inicial. Esta acción no afecta el historial ya digitalizado.</div>
     <div class="modal-actions">
       <button class="btn btn-no" id="btnResetNo">NO</button>
       <button class="btn btn-yes" id="btnResetSi">SI</button>
@@ -560,9 +581,20 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
   var CONFIG = {
     emailDomainCodigo: "@sipo.com.co",
     emailDomainElaboro: "@frisby.com.co",
+    defaultCC: "surrea@frisby.com.co",
     creditText: "Desarrollado por José Luis Sarmiento Bernal",
     legalNotice: "Uso restringido — prohibida su copia, distribución o modificación no autorizada"
   };
+
+  /* Correos: acepta una o varias direcciones separadas por coma o punto y coma */
+  var EMAIL_RE = /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/;
+  function parseEmails(txt){
+    return (txt || "").split(/[,;]+/).map(function(s){ return s.trim(); }).filter(Boolean);
+  }
+  function emailsValidos(txt){
+    var list = parseEmails(txt);
+    return list.every(function(e){ return EMAIL_RE.test(e); });
+  }
 
   function generarCorreoCodigo(codigo){
     var c = (codigo || "").trim().replace(/\s+/g,"");
@@ -905,7 +937,7 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
   function blankState(){
     return { codigo:"", correoCodigo:"", correoCodigoAuto:true,
              restaurante:"", elaboro:"", correoElaboro:"", correoElaboroAuto:true, fecha:todayIso(),
-             calif:{}, obs:{}, hallazgos:"" };
+             calif:{}, obs:{}, hallazgos:"", recibio:"", correoCC:CONFIG.defaultCC };
   }
 
   function loadDraft(){
@@ -924,7 +956,9 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
         fecha: parsed.fecha || "",
         calif: parsed.calif || {},
         obs: parsed.obs || {},
-        hallazgos: parsed.hallazgos || ""
+        hallazgos: parsed.hallazgos || "",
+        recibio: parsed.recibio || "",
+        correoCC: (typeof parsed.correoCC === "string") ? parsed.correoCC : CONFIG.defaultCC
       };
     }catch(e){ return blankState(); }
   }
@@ -1021,11 +1055,20 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     }
     return arr;
   }
+  /* Lista de todo lo que falta para poder digitalizar (para el aviso rojo y el botón) */
+  function pendientes(){
+    var out = [];
+    var miss = missingItems();
+    if(miss.length > 0) out.push("calificar los ítems " + miss.join(", "));
+    if(state.restaurante.trim() === "") out.push("el nombre del restaurante");
+    if(state.elaboro.trim() === "") out.push("el nombre de quien elaboró");
+    if(state.fecha.trim() === "") out.push("la fecha");
+    if((state.recibio || "").trim() === "") out.push("el nombre de quien recibió la visita");
+    if(!emailsValidos(state.correoCC)) out.push("corregir el correo CC");
+    return out;
+  }
   function isReadyToDigitalizar(){
-    return answeredCount() === TOTAL_ITEMS &&
-           state.restaurante.trim() !== "" &&
-           state.elaboro.trim() !== "" &&
-           state.fecha.trim() !== "";
+    return pendientes().length === 0;
   }
 
   /* ============ RENDER: sections/items ============ */
@@ -1099,6 +1142,8 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     document.getElementById("correoElaboroInput").value = state.correoElaboro;
     document.getElementById("fechaInput").value = state.fecha;
     document.getElementById("hallazgosInput").value = state.hallazgos || "";
+    document.getElementById("recibioInput").value = state.recibio || "";
+    document.getElementById("correoCCInput").value = state.correoCC || "";
     updateFechaGhost();
 
     sectionsRoot.querySelectorAll(".score-select").forEach(function(sel){
@@ -1162,16 +1207,20 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     pf.style.width = ((count/TOTAL_ITEMS)*100) + "%";
     pf.classList.toggle("complete", count === TOTAL_ITEMS);
 
-    var missing = missingItems();
+    var pend = pendientes();
     var banner = document.getElementById("missingBanner");
-    if(missing.length > 0 && missing.length < TOTAL_ITEMS){
+    if(pend.length > 0 && count > 0){
       banner.classList.remove("hidden");
-      banner.textContent = "Faltan por calificar los ítems: " + missing.join(", ");
+      banner.textContent = "Falta: " + pend.join(" · ");
     } else {
       banner.classList.add("hidden");
     }
 
-    document.getElementById("btnDigitalizar").disabled = !isReadyToDigitalizar();
+    var ccOk = emailsValidos(state.correoCC);
+    document.getElementById("correoCCError").classList.toggle("hidden", ccOk);
+    document.getElementById("correoCCInput").classList.toggle("is-invalid", !ccOk);
+
+    document.getElementById("btnDigitalizar").disabled = pend.length > 0;
   }
 
   function updateFechaGhost(){
@@ -1222,6 +1271,12 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
   });
   document.getElementById("hallazgosInput").addEventListener("input", function(e){
     state.hallazgos = e.target.value; saveDraft();
+  });
+  document.getElementById("recibioInput").addEventListener("input", function(e){
+    state.recibio = e.target.value; saveDraft(); refreshAll();
+  });
+  document.getElementById("correoCCInput").addEventListener("input", function(e){
+    state.correoCC = e.target.value; saveDraft(); refreshAll();
   });
 
   /* ============ RESET FLOW ============ */
@@ -1387,7 +1442,7 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     }
 
     var finalY = doc.lastAutoTable.finalY + 26;
-    if(finalY > pageHeight - 90){ doc.addPage(); finalY = 50;
+    if(finalY > pageHeight - 115){ doc.addPage(); finalY = 50;
       doc.setFont("helvetica","italic"); doc.setFontSize(7); doc.setTextColor(120,116,108);
       doc.text(CONFIG.creditText + " — " + CONFIG.legalNotice, pageWidth/2, pageHeight - 18, {align:"center"});
     }
@@ -1408,6 +1463,16 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     doc.setFont("helvetica","normal");
     doc.text(fechaDisplay(snapshot.fecha), pageWidth - margin - 105, finalY);
 
+    var recibioY = finalY + 32;
+    doc.setFontSize(9.5);
+    doc.setFont("helvetica","bold");
+    var recibioLabel = "RECIBIÓ VISITA:";
+    var recibioLabelW = doc.getTextWidth(recibioLabel);
+    doc.text(recibioLabel, margin, recibioY);
+    doc.setFont("helvetica","normal");
+    var recibioLines = doc.splitTextToSize(snapshot.recibio || "", pageWidth - margin*2 - recibioLabelW - 10);
+    doc.text(recibioLines, margin + recibioLabelW + 8, recibioY);
+
     return { doc:doc, pct:pct, totalScore:calc.totalScore, totalMax:calc.totalMax };
   }
 
@@ -1419,34 +1484,56 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     var blob = result.doc.output("blob");
 
     saveViaDownloadsCapability(filename, blob).then(function(){
-      addToHistorial(snapshot, filename, result);
-      showToast("Visita digitalizada. Descargando PDF…");
-      abrirBorradorCorreo(snapshot, filename);
-    }).catch(function(err){
-      addToHistorial(snapshot, filename, result);
+      return "ok";
+    }, function(){
       fallbackDownload(blob, filename);
-      showToast("PDF generado.");
+      return "fallback";
+    }).then(function(){
+      addToHistorial(snapshot, filename, result);
       abrirBorradorCorreo(snapshot, filename);
+      volverAlMenuListo();
     });
   }
 
+  /* Tras digitalizar: formulario en blanco y de regreso al menú principal */
+  function volverAlMenuListo(){
+    state = blankState();
+    clearDraft();
+    prefillElaboradorSiVacio();
+    applyStateToInputs();
+    sectionsRoot.querySelectorAll(".section-card").forEach(function(c){ c.classList.remove("collapsed"); });
+    refreshAll();
+    goToMenu();
+    showToast("Visita digitalizada. Recuerda adjuntar el PDF descargado al correo.", { alert:true, ms:7000 });
+  }
+
   function abrirBorradorCorreo(snapshot, filename){
-    var correos = [snapshot.correoCodigo, snapshot.correoElaboro]
+    var para = [snapshot.correoCodigo, snapshot.correoElaboro]
       .map(function(c){ return (c || "").trim(); })
       .filter(function(c){ return c !== ""; });
-    var unicos = correos.filter(function(c, i){ return correos.indexOf(c) === i; });
-    if(unicos.length === 0) return;
+    var paraUnicos = para.filter(function(c, i){ return para.indexOf(c) === i; });
+    var paraLower = paraUnicos.map(function(c){ return c.toLowerCase(); });
+
+    var cc = parseEmails(snapshot.correoCC).filter(function(c, i, arr){
+      var lc = c.toLowerCase();
+      return paraLower.indexOf(lc) === -1 &&
+             arr.map(function(x){ return x.toLowerCase(); }).indexOf(lc) === i;
+    });
+    if(paraUnicos.length === 0 && cc.length === 0) return;
 
     var asunto = activeFormat.menuTitle + " - " + (snapshot.restaurante || "") + " - " + fechaDisplay(snapshot.fecha);
     var cuerpo = "Adjunto el formato digitalizado.\n\n" +
                  "IMPORTANTE: adjunta manualmente el archivo \"" + filename + "\" que se acaba de descargar " +
                  "(por seguridad del navegador, el PDF no puede adjuntarse automáticamente).\n\n" +
                  "Restaurante: " + (snapshot.restaurante || "") + "\n" +
-                 "Fecha: " + fechaDisplay(snapshot.fecha) + "\n\n" +
+                 "Fecha: " + fechaDisplay(snapshot.fecha) + "\n" +
+                 "Recibió visita: " + (snapshot.recibio || "") + "\n\n" +
                  "RECUERDE QUE DISPONE DE 5 DÍAS HÁBILES PARA REALIZAR Y COMPARTIR EL PLAN DE ACCIÓN DE ESTA VISITA";
 
-    var mailto = "mailto:" + encodeURIComponent(unicos.join(",")).replace(/%2C/g, ",") +
+    function enc(list){ return encodeURIComponent(list.join(",")).replace(/%2C/g, ",").replace(/%40/g, "@"); }
+    var mailto = "mailto:" + enc(paraUnicos) +
                  "?subject=" + encodeURIComponent(asunto) +
+                 (cc.length ? "&cc=" + enc(cc) : "") +
                  "&body=" + encodeURIComponent(cuerpo);
 
     setTimeout(function(){
@@ -1505,7 +1592,7 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
       panel.innerHTML = '<div class="history-empty">Aún no hay visitas digitalizadas.</div>';
       return;
     }
-    var html = "";
+    var html = '<div class="history-note">Las visitas se guardan solo en este dispositivo (las últimas ' + HIST_MAX + ' de este formato) y se pierden si se borran los datos del navegador. Descarga los PDF que necesites conservar.</div>';
     list.forEach(function(h){
       html += '<div class="history-item">';
       html += '  <div class="hi-main">';
@@ -1516,7 +1603,21 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
       html += '  <button class="hi-dl" data-hid="'+h.id+'">Descargar</button>';
       html += '</div>';
     });
+    html += '<button class="history-dl-all" id="btnDlAll">Descargar todos los PDF de este formato (' + list.length + ')</button>';
     panel.innerHTML = html;
+    document.getElementById("btnDlAll").addEventListener("click", function(){
+      var items = loadHistorial();
+      items.forEach(function(item, i){
+        setTimeout(function(){
+          try{
+            var res = buildPdf(item.snapshot);
+            var b = res.doc.output("blob");
+            saveViaDownloadsCapability(item.filename, b).catch(function(){ fallbackDownload(b, item.filename); });
+          }catch(e){}
+        }, i * 900);
+      });
+      showToast("Descargando " + items.length + " PDF… si tu navegador pide permiso para descargas múltiples, acéptalo.", { ms:5000 });
+    });
     panel.querySelectorAll(".hi-dl").forEach(function(btn){
       btn.addEventListener("click", function(){
         var id = Number(btn.getAttribute("data-hid"));
@@ -1537,12 +1638,14 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
 
   /* ============ TOAST ============ */
   var toastTimer = null;
-  function showToast(msg){
+  function showToast(msg, opts){
+    opts = opts || {};
     var t = document.getElementById("toast");
     t.textContent = msg;
+    t.classList.toggle("toast-alert", !!opts.alert);
     t.classList.add("show");
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 3200);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, opts.ms || 3200);
   }
 
   /* ============ MENÚ / SELECCIÓN DE FORMATO ============ */
@@ -1621,7 +1724,15 @@ window.HSASE_BlockURL = '/_cp_32a94697ca774284/dlp/block';
     window.scrollTo(0,0);
   }
 
-  document.getElementById("btnBackToMenu").addEventListener("click", goToMenu);
+  /* Regresar al menú principal: vuelve directo y guarda el avance */
+  document.getElementById("btnBackToMenu").addEventListener("click", function(){
+    var hayAvance = answeredCount() > 0;
+    saveDraft();
+    goToMenu();
+    if(hayAvance){
+      showToast("Avance guardado. Podrás continuar este formato cuando quieras.", { alert:true, ms:4500 });
+    }
+  });
 
   function renderScreenWatermark(){
     var wm = document.getElementById("screenWatermark");
